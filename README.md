@@ -6,6 +6,8 @@ VIA University College Android Development course project.
 ## About the app
 Meet 'n Music is an android app that is used to publish and share musical events: festivals, concerts, parties, etc. Users can search for events and notify to the event manager that they will assist. Each event shows its own information: description, images, weather, COVID restrictions, etc. 
 
+## Figma prototype
+[You can see app prototype here](https://www.figma.com/proto/aGaNYe0UEvxEouh3t2du4n/AndroidPrototype?node-id=19%3A77&scaling=scale-down&page-id=0%3A1&starting-point-node-id=12%3A2)
 
 ## MoSCoW requirements
 Our application will have some features with different crucial roles, so in order to have them structured we made a MoSCoW requirements.
