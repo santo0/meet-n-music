@@ -30,8 +30,8 @@ Our application will have some features with different crucial roles, so in orde
 
 - For a high quality android app we **could apply** :
     - Q&A section below the event description.
-    - A place where you can see the history and activity of your friends.
+    - Notifications and alerts in the phone.
 
 - We thought about this ideas, but we **won't have time** to implement them :
-    - Notifications and alerts in the phone.
+    - A place where you can see the history and activity of your friends.
     - Changing the Q&A section for a real time chat.
