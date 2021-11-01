@@ -37,6 +37,7 @@ public class RegisterFragment extends Fragment {
     private ProgressBar progressBar2;
     private Button registerUser;
     private FirebaseAuth mAuth;
+    private boolean check = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,7 +57,6 @@ public class RegisterFragment extends Fragment {
         registerUser = (Button) view.findViewById(R.id.registerUser);
         registerUser.setOnClickListener(v ->{
             registerUserFunction();
-            Navigation.findNavController(v).navigate(R.id.action_registerFragment_to_startPageFragment);
         } );
         return view;
     }
@@ -116,7 +116,7 @@ public class RegisterFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getActivity(), "User has been registered successfully!", Toast.LENGTH_LONG).show();
                                 progressBar2.setVisibility(View.GONE);
-
+                                Navigation.findNavController(getView()).navigate(R.id.action_registerFragment_to_startPageFragment);
                             } else {
                                 Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                                 progressBar2.setVisibility(View.GONE);
