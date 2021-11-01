@@ -1,17 +1,20 @@
 package com.example.meet_n_music;
 
-import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +22,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class RegisterUser extends AppCompatActivity implements View.OnClickListener{
+public class RegisterFragment extends Fragment {
+
+    public RegisterFragment() {
+        // Required empty public constructor
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     private TextView banner2;
     private EditText username2, email2, psswrd2, rPsswrd2;
     private ProgressBar progressBar2;
@@ -27,21 +39,27 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth mAuth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_layout);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        // Inflate the layout for this fragment
         mAuth = FirebaseAuth.getInstance();
-        banner2 = (TextView) findViewById(R.id.banner2);
-        banner2.setOnClickListener(this);
-        username2 = (EditText) findViewById(R.id.username2);
-        email2 = (EditText) findViewById(R.id.email2);
-        psswrd2 = (EditText) findViewById(R.id.password2);
-        rPsswrd2 = (EditText) findViewById(R.id.repeatPassword2);
-        progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
-        registerUser = (Button) findViewById(R.id.registerUser);
-        registerUser.setOnClickListener(this);
+        banner2 = (TextView) view.findViewById(R.id.banner2);
+        banner2.setOnClickListener(v ->{
+            Navigation.findNavController(v).navigate(R.id.action_registerFragment_to_startPageFragment);
+        } );
+        username2 = (EditText) view.findViewById(R.id.username2);
+        email2 = (EditText) view.findViewById(R.id.email2);
+        psswrd2 = (EditText) view.findViewById(R.id.password2);
+        rPsswrd2 = (EditText) view.findViewById(R.id.repeatPassword2);
+        progressBar2 = (ProgressBar) view.findViewById(R.id.progressBar2);
+        registerUser = (Button) view.findViewById(R.id.registerUser);
+        registerUser.setOnClickListener(v ->{
+            registerUserFunction();
+            Navigation.findNavController(v).navigate(R.id.action_registerFragment_to_startPageFragment);
+        } );
+        return view;
     }
-
 
     private void registerUserFunction() {
 
@@ -96,32 +114,20 @@ public class RegisterUser extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(RegisterUser.this, "User has been registered successfully!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "User has been registered successfully!", Toast.LENGTH_LONG).show();
                                 progressBar2.setVisibility(View.GONE);
 
                             } else {
-                                Toast.makeText(RegisterUser.this, "Failed to register! Try again!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                                 progressBar2.setVisibility(View.GONE);
                             }
                         }
                     });
                 } else {
-                    Toast.makeText(RegisterUser.this, "Failed to register! Try again!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar2.setVisibility(View.GONE);
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.banner2:
-                startActivity(new Intent(this, MainActivity.class));
-                break;
-            case R.id.registerUser:
-                registerUserFunction();
-                break;
-        }
     }
 }
