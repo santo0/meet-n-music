@@ -7,20 +7,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView register;
+    private TextView createAccountListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
 
-        register = findViewById(R.id.createAccount);
-        register.setOnClickListener(l -> {
-            setContentView(R.layout.register_layout);
-        });
+        createAccountListener = (TextView) findViewById(R.id.createAccount);
+        createAccountListener.setOnClickListener(this);
     }
 
-
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.createAccount:
+                startActivity(new Intent(this, RegisterUser.class));
+                break;
+        }
+    }
 }
