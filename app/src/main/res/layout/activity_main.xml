@@ -7,9 +7,12 @@
     tools:context=".MainActivity">
 
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-        android:name="com.example.meet_n_music.EventListFragment"
+    <fragment
+        android:id="@+id/navhostfragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost = "true"
+        app:navGraph = "@navigation/navgraph"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
