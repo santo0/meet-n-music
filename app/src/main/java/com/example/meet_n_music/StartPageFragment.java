@@ -94,7 +94,7 @@ public class StartPageFragment extends Fragment {
                 if (task.isSuccessful()){
                     Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
-                    //redirect to the feed
+                    Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_userProfileFragment);
                 }else{
                     Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
