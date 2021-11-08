@@ -40,10 +40,17 @@ public class StartPageFragment extends Fragment {
     private Button loginUser;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_start_page, container, false);
+
         email1 = (EditText) view.findViewById(R.id.email);
         psswrd1 = (EditText) view.findViewById(R.id.password);
         progressBar1 = (ProgressBar) view.findViewById(R.id.progressBar);
@@ -94,7 +101,7 @@ public class StartPageFragment extends Fragment {
                 if (task.isSuccessful()){
                     Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
-                    Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_userProfileFragment);
+                    Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
                 }else{
                     Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
