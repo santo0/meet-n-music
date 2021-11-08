@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_startPageFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
+        <action
+            android:id="@+id/action_startPageFragment_to_creatingEventFragment"
+            app:destination="@id/creatingEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -30,4 +33,8 @@
         android:id="@+id/userProfileFragment"
         android:name="com.example.meet_n_music.UserProfileFragment"
         android:label="UserProfileFragment" />
+    <fragment
+        android:id="@+id/creatingEventFragment"
+        android:name="com.example.meet_n_music.CreatingEventFragment"
+        android:label="CreatingEventFragment" />
 </navigation>

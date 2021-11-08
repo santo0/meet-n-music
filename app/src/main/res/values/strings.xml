@@ -2,4 +2,21 @@
     <string name="app_name">Meet-n-Music</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="Genres">
+        <item>Latin</item>
+        <item>Hip-hop</item>
+        <item>Jazz</item>
+        <item>Rock</item>
+        <item>Pop</item>
+        <item>EDM</item>
+        <item>Reggae</item>
+        <item>Flamenco</item>
+    </string-array>
+
+    <string-array name="CovidRestrictions">
+        <item>Vaccine</item>
+        <item>Security distance</item>
+        <item>PCR</item>
+        <item>Face mask</item>
+    </string-array>
 </resources>
