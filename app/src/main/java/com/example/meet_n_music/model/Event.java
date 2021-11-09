@@ -14,13 +14,35 @@ public class Event {
     }
 
     public Event(String name, String description, String location, String startDate, String genre, String covid){
-
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.startDate = startDate;
+        this.genre = genre;
+        this.covid = covid;
     }
+
     public String getDescription() {
         return description;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getCovid() {
+        return covid;
     }
 }

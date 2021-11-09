@@ -36,5 +36,9 @@
     <fragment
         android:id="@+id/creatingEventFragment"
         android:name="com.example.meet_n_music.CreatingEventFragment"
-        android:label="CreatingEventFragment" />
+        android:label="CreatingEventFragment" >
+        <action
+            android:id="@+id/action_creatingEventFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
 </navigation>

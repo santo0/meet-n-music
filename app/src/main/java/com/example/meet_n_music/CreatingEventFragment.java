@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,10 +18,16 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.meet_n_music.model.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
@@ -42,6 +49,9 @@ public class CreatingEventFragment extends Fragment {
     private View createEvent;
     private Button startDate;
     private DatePickerDialog startDateEventDialog;
+    private ProgressBar progressBar3;
+    private FirebaseDatabase db;
+    private DatabaseReference reference;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +61,7 @@ public class CreatingEventFragment extends Fragment {
         eventName = (EditText) view.findViewById(R.id.eventName);
         eventDescription = (EditText) view.findViewById(R.id.EventDescription);
         location = (EditText) view.findViewById(R.id.location);
+        progressBar3 = (ProgressBar) view.findViewById(R.id.progressBar3);
         initDatePicker();
         startDate = (Button) view.findViewById(R.id.eventStartDate);
         startDate.setOnClickListener(v -> {
@@ -181,12 +192,29 @@ public class CreatingEventFragment extends Fragment {
             }
         }
         eventCovidRestrictionString = eventCovidRestrictionString.replaceAll(", $", "");
-        Toast.makeText(getActivity(), eventGenre, Toast.LENGTH_SHORT).show();
+        /*Toast.makeText(getActivity(), eventGenre, Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), eventCovidRestrictionString, Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), startEventDateString, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), startEventDateString, Toast.LENGTH_SHORT).show();*/
 
         //Guardar informació en un nou Event class (a la database) + tornar al feed.
-        Event event
+        progressBar3.setVisibility(View.VISIBLE);
+        db = FirebaseDatabase.getInstance();
+        reference = db.getReference("Events");
+        Event event = new Event(eventNameString, eventDescriptionString, locationString, startEventDateString, eventGenre, eventCovidRestrictionString);
+        reference.child(eventNameString).setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
+                    progressBar3.setVisibility(View.GONE);
+                    Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_userProfileFragment);
+                } else {
+                    Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
+                    progressBar3.setVisibility(View.GONE);
+                }
+            }
+        });
+
     }
 
 }
