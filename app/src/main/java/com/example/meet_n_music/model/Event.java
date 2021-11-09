@@ -1,26 +1,21 @@
 package com.example.meet_n_music.model;
 
 public class Event {
-    private String name;
-    private String imgPath;
-    private String description;
+    private String name, description, location, startDate, genre, covid;
 
     public Event(){
         this.name = "ERROR_NAME";
-        this.imgPath = "ERORR_PATH";
         this.description = "ERROR_DESCRIPTION";
     }
 
-    public Event(String name, String imgPath, String description) {
+    public Event(String name, String description) {
         this.name = name;
-        this.imgPath = imgPath;
         this.description = description;
     }
 
-    public String getImgPath() {
-        return imgPath;
-    }
+    public Event(String name, String description, String location, String startDate, String genre, String covid){
 
+    }
     public String getDescription() {
         return description;
     }
