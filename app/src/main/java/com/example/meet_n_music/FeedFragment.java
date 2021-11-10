@@ -37,6 +37,8 @@ public class FeedFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.appbar_top).findViewById(R.id.btn_return_back).setVisibility(View.GONE);
     }
 
     @Override
@@ -44,6 +46,8 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
+
+
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference  =FirebaseDatabase.getInstance().getReference();
         Query query = reference.child("Users/"+fUser.getUid());
