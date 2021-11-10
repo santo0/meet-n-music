@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_feedFragment_to_eventListFragment"
             app:destination="@id/eventListFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_creatingEventFragment"
+            app:destination="@id/creatingEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/eventListFragment"
@@ -65,4 +68,13 @@
         android:name="com.example.meet_n_music.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/creatingEventFragment"
+        android:name="com.example.meet_n_music.CreatingEventFragment"
+        android:label="CreatingEventFragment" />
+    <fragment
+        android:id="@+id/eventFragment"
+        android:name="com.example.meet_n_music.EventFragment"
+        android:label="fragment_event"
+        tools:layout="@layout/fragment_event" />
 </navigation>
