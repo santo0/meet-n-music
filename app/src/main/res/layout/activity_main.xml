@@ -16,7 +16,7 @@
         android:layout_alignParentBottom="true"/>
 
     <fragment
-        android:id="@+id/navhostfragment"
+        android:id="@+id/navHostFragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:defaultNavHost = "true"
         app:navGraph = "@navigation/navgraph"
