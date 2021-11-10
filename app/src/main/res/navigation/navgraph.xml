@@ -71,7 +71,11 @@
     <fragment
         android:id="@+id/creatingEventFragment"
         android:name="com.example.meet_n_music.CreatingEventFragment"
-        android:label="CreatingEventFragment" />
+        android:label="CreatingEventFragment" >
+        <action
+            android:id="@+id/action_creatingEventFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+    </fragment>
     <fragment
         android:id="@+id/eventFragment"
         android:name="com.example.meet_n_music.EventFragment"
