@@ -201,7 +201,7 @@ public class CreatingEventFragment extends Fragment {
         db = FirebaseDatabase.getInstance();
         reference = db.getReference("Events");
         Event event = new Event(eventNameString, eventDescriptionString, locationString, startEventDateString, eventGenre, eventCovidRestrictionString);
-        reference.child(eventNameString).setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.push().setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
