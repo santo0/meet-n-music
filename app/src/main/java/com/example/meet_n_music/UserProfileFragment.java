@@ -2,6 +2,8 @@ package com.example.meet_n_music;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,29 +47,49 @@ public class UserProfileFragment extends Fragment {
             throw new NullPointerException();
         }
 
+        //Show username
+        //TODO
         username.setText(user.toString());
+
+        //Show user profile photo
+        //TODO
         Glide.with(this)
                 .load(user.getPhotoUrl())
                 .override(100, 100)
                 .into(profilePhoto);
+
+        //Change user profile photo
         changePhoto.setOnClickListener(l -> {
-
+            //TODO
         });
+
+        //Show email
+        //TODO
         profileEmail.setText(user.getEmail());
+
+        //Change user email
         changeEmail.setOnClickListener(l -> {
-
+            Navigation.findNavController(getView()).navigate(R.id.action_userProfileFragment_to_changeEmailFragment);
         });
+
+        //Change user password
         changePassword.setOnClickListener(l -> {
-
+            Navigation.findNavController(getView()).navigate(R.id.action_userProfileFragment_to_changePasswordFragment);
         });
+
+        //Change language to Spanish
         lSpanish.setOnClickListener(l -> {
-
+            //TODO
         });
+
+        //Change language to English
         lEnglish.setOnClickListener(l -> {
-
+            //TODO
         });
-        lDanish.setOnClickListener(l -> {
 
+        //Change language to Danish
+        lDanish.setOnClickListener(l -> {
+            //TODO
         });
 
         return view;
