@@ -39,7 +39,7 @@ public class ChangeEmailFragment extends Fragment {
         Button submitButton = view.findViewById(R.id.submitEmail);
         submitButton.setOnClickListener(l -> {
             //TODO
-            if (currentEmail.equals(/***User email***/)) {
+            if (currentEmail.equals("***User email***")) {
                 if (newEmail.equals(confirmEmail)) {
                     //TODO
                     //Change email
