@@ -89,5 +89,5 @@ misc.xml
 google-services.json
 compiler.xml
 .name
-/shelf/
-/workspace.xml
+shelf/
+workspace.xml
