@@ -1,7 +1,7 @@
 package com.example.meet_n_music.model;
 
 public class Event {
-    private String name, description, location, startDate, genre, covid;
+    private String id, name, description, location, startDate, genre, covid;
 
     public Event(){
         this.name = "ERROR_NAME";
@@ -13,6 +13,16 @@ public class Event {
         this.description = description;
     }
 
+    public Event(String id, String name, String description, String location, String startDate, String genre, String covid){
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.location = location;
+        this.startDate = startDate;
+        this.genre = genre;
+        this.covid = covid;
+    }
+
     public Event(String name, String description, String location, String startDate, String genre, String covid){
         this.name = name;
         this.description = description;
@@ -22,6 +32,8 @@ public class Event {
         this.covid = covid;
     }
 
+    public void setId(String id) { this.id = id;}
+    public String getId() {return this.id;}
     public String getDescription() {
         return description;
     }

@@ -4,13 +4,19 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.meet_n_music.repository.Repo;
+import com.example.meet_n_music.viewmodel.EventViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +29,10 @@ import com.google.firebase.database.ValueEventListener;
 
 public class FeedFragment extends Fragment {
 
+    private RecyclerView recyclerView;
+    private EventListAdapter adapter;
+    private EventViewModel eventViewModel;
+    private Button syncBtn;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -70,6 +80,20 @@ public class FeedFragment extends Fragment {
             }
         };
         query.addListenerForSingleValueEvent(valueEventListener);
+
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        eventViewModel = new ViewModelProvider(this).get(EventViewModel.class);
+        eventViewModel.init();
+        eventViewModel.getEvents().observe(getViewLifecycleOwner(), events -> adapter.notifyDataSetChanged());
+
+        adapter = new EventListAdapter(eventViewModel.getEvents().getValue());
+        recyclerView.setAdapter(adapter);
+
+        syncBtn = view.findViewById(R.id.syncBtn);
+        syncBtn.setOnClickListener(view1 -> Repo.getInstance().getEvents());
 
         return view;
     }

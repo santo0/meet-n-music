@@ -69,10 +69,16 @@ public class Repo {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayListEvents.clear();
                 for (DataSnapshot snap : snapshot.getChildren()) {
+                    Event event = snap.getValue(Event.class);
+                    event.setId(snap.getKey());
+                    Log.d("debugFS", snap.getKey());
+                    arrayListEvents.add(event);
+                    Log.d("debugFS", event.getId());
+                    Log.d("debugFS", event.getName());
+                    Log.d("debugFS", event.getDescription());
+                    Log.d("debugFS", event.getCovid());
+                    Log.d("debugFS", event.getGenre());
 
-                    arrayListEvents.add(snap.getValue(Event.class));
-                    Log.d("debugFS", snap.getValue(Event.class).getName());
-                    Log.d("debugFS", snap.getValue(Event.class).getDescription());
                 }
                 firebaseCallback.onCallback(arrayListEvents);
             }
