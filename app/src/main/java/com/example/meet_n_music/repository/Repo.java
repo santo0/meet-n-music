@@ -43,7 +43,6 @@ public class Repo {
         Log.d("debugGetEvents", String.valueOf(arrayListEvents.size()));
         for (Event event : arrayListEvents) {
             Log.d("debugGetEvents", event.getName());
-            Log.d("debugGetEvents", event.getImgPath());
         }
         return mutableLiveDataEvent;
     }

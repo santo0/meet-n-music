@@ -37,7 +37,6 @@ public class RegisterFragment extends Fragment {
     private ProgressBar progressBar2;
     private Button registerUser;
     private FirebaseAuth mAuth;
-    private boolean check = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
