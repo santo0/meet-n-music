@@ -33,6 +33,13 @@
         <action
             android:id="@+id/action_userProfileFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
+
+        <action
+            android:id="@+id/action_userProfileFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_changeEmailFragment"
+            app:destination="@id/changeEmailFragment" />
     </fragment>
     <fragment
         android:id="@+id/feedFragment"
@@ -59,6 +66,14 @@
             app:destination="@id/feedFragment" />
     </fragment>
     <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.example.meet_n_music.ChangePasswordFragment"
+        android:label="ChangePasswordFragment" />
+    <fragment
+        android:id="@+id/changeEmailFragment"
+        android:name="com.example.meet_n_music.ChangeEmailFragment"
+        android:label="ChangeEmailFragment" />
+    <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.meet_n_music.SearchFragment"
         android:label="fragment_search"
@@ -77,8 +92,9 @@
             app:destination="@id/feedFragment" />
     </fragment>
     <fragment
-        android:id="@+id/eventFragment"
-        android:name="com.example.meet_n_music.EventFragment"
-        android:label="fragment_event"
-        tools:layout="@layout/fragment_event" />
+        android:id="@+id/viewEventFragment"
+        android:name="com.example.meet_n_music.ViewEventFragment"
+        android:label="fragment_view_event"
+        tools:layout="@layout/fragment_view_event" />
+
 </navigation>

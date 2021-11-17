@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/currentEmailT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/current_email"
+        android:textSize="15sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/currentEmail"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/currentEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="17dp"
+        android:hint="@string/your_current_email"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/newEmailT"
+        app:layout_constraintStart_toEndOf="@+id/currentEmailT" />
+
+    <TextView
+        android:id="@+id/newEmailT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/new_email_"
+        android:textSize="15sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/newEmail"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/newEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/new_email"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/confirmEmail"
+        app:layout_constraintStart_toStartOf="@+id/confirmEmail" />
+
+    <TextView
+        android:id="@+id/confirmEmailT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="160dp"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/confirm_email"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/confirmEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:layout_marginStart="8dp"
+        android:hint="@string/repeat_the_email"
+        android:textSize="15sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/confirmEmailT"
+        app:layout_constraintStart_toEndOf="@+id/confirmEmailT" />
+
+    <Button
+        android:id="@+id/submitEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="44dp"
+        android:backgroundTint="@color/purple_200"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/submit"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/confirmEmail"
+        app:layout_constraintTop_toBottomOf="@+id/confirmEmail" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
