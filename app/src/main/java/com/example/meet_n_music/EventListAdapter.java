@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.meet_n_music.model.Event;
@@ -29,8 +30,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.itemView.setTag(events.get(position));
-        holder.name.setText(events.get(position).getName());
+        Event event = events.get(position);
+        holder.itemView.setTag(event);
+        holder.name.setText(event.getName());
+        holder.itemView.setOnClickListener(view -> {
+
+            FeedFragmentDirections.ActionFeedFragmentToViewEventFragment action = FeedFragmentDirections.actionFeedFragmentToViewEventFragment();
+            action.setEventId(event.getId());
+            Navigation.findNavController(view).navigate(action);
+        });
     }
 
     @Override
@@ -41,9 +49,9 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView name;
 
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                name = itemView.findViewById(R.id.tvEventName);
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.tvEventName);
         }
     }
 }

@@ -39,7 +39,7 @@ public class ChangePasswordFragment extends Fragment {
         Button submitButton = view.findViewById(R.id.submitPassword);
         submitButton.setOnClickListener(l -> {
             //TODO
-            if (currentPassword.equals(/***User password***/)) {
+            if (currentPassword.equals("***User password***")) {
                 if (newPassword.equals(confirmPassword)) {
                     //TODO
                     //Change password

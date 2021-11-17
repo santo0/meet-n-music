@@ -83,3 +83,13 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+misc.xml
+
+google-services.json
+compiler.xml
+.name
+shelf/
+workspace.xml
+
+.idea/*
