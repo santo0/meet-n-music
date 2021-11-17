@@ -91,3 +91,5 @@ compiler.xml
 .name
 shelf/
 workspace.xml
+
+.idea/
