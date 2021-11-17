@@ -39,6 +39,12 @@ public class RegisterFragment extends Fragment {
     private FirebaseAuth mAuth;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register, container, false);

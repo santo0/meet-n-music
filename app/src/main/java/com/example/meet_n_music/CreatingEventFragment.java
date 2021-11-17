@@ -38,6 +38,14 @@ public class CreatingEventFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +72,7 @@ public class CreatingEventFragment extends Fragment {
         progressBar3 = (ProgressBar) view.findViewById(R.id.progressBar3);
         initDatePicker();
         startDate = (Button) view.findViewById(R.id.eventStartDate);
-        startDate.setOnClickListener(v -> {
-            openStartDate(v);
-        });
+        startDate.setOnClickListener(v -> openStartDate(v));
         startDate.setText(getTodaysDate());
         genreSelector = (Spinner) view.findViewById(R.id.genreSelection);
         ArrayAdapter<String> genreAdaptor = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Genres));
@@ -207,7 +213,9 @@ public class CreatingEventFragment extends Fragment {
                 if (task.isSuccessful()) {
                     Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
                     progressBar3.setVisibility(View.GONE);
-                    Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_viewEventFragment);
+
+                    Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_feedFragment);
+
                 } else {
                     Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar3.setVisibility(View.GONE);

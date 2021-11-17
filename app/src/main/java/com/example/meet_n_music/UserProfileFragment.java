@@ -52,6 +52,12 @@ public class UserProfileFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_user_profile, container, false);

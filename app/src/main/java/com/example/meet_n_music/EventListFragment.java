@@ -38,10 +38,18 @@ public class EventListFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
+
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
