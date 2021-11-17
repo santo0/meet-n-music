@@ -92,4 +92,4 @@ compiler.xml
 shelf/
 workspace.xml
 
-.idea/
+.idea/*
