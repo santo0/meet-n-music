@@ -207,7 +207,7 @@ public class CreatingEventFragment extends Fragment {
                 if (task.isSuccessful()) {
                     Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
                     progressBar3.setVisibility(View.GONE);
-                    Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_userProfileFragment);
+                    Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_viewEventFragment);
                 } else {
                     Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar3.setVisibility(View.GONE);
