@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_startPageFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
+        <action
+            android:id="@+id/action_startPageFragment_to_creatingEventFragment"
+            app:destination="@id/creatingEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -45,4 +48,21 @@
         android:id="@+id/changeEmailFragment"
         android:name="com.example.meet_n_music.ChangeEmailFragment"
         android:label="ChangeEmailFragment" />
+    <fragment
+        android:id="@+id/creatingEventFragment"
+        android:name="com.example.meet_n_music.CreatingEventFragment"
+        android:label="CreatingEventFragment" >
+        <action
+            android:id="@+id/action_creatingEventFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+        <action
+            android:id="@+id/action_creatingEventFragment_to_viewEventFragment"
+            app:destination="@id/viewEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewEventFragment"
+        android:name="com.example.meet_n_music.ViewEventFragment"
+        android:label="fragment_view_event"
+        tools:layout="@layout/fragment_view_event" />
+
 </navigation>

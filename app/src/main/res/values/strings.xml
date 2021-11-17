@@ -19,4 +19,21 @@
     <string name="new_email_">New email:</string>
     <string name="your_current_email">Your current email</string>
     <string name="current_email">Current email:</string>
+    <string-array name="Genres">
+        <item>Latin</item>
+        <item>Hip-hop</item>
+        <item>Jazz</item>
+        <item>Rock</item>
+        <item>Pop</item>
+        <item>EDM</item>
+        <item>Reggae</item>
+        <item>Flamenco</item>
+    </string-array>
+
+    <string-array name="CovidRestrictions">
+        <item>Vaccine</item>
+        <item>Security distance</item>
+        <item>PCR</item>
+        <item>Face mask</item>
+    </string-array>
 </resources>
