@@ -107,5 +107,15 @@
             app:argType="string"
             android:defaultValue="Error" />
     </fragment>
+    <fragment
+        android:id="@+id/userCreatedEventsFragment"
+        android:name="com.example.meet_n_music.UserCreatedEventsFragment"
+        android:label="fragment_user_created_events"
+        tools:layout="@layout/fragment_user_created_events" />
+    <fragment
+        android:id="@+id/userToAttendEventsFragment"
+        android:name="com.example.meet_n_music.UserToAttendEventsFragment"
+        android:label="fragment_user_to_attend_events"
+        tools:layout="@layout/fragment_user_to_attend_events" />
 
 </navigation>
