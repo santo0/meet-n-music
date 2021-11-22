@@ -1,4 +1,4 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
@@ -8,21 +8,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MapFragment extends Fragment {
-    public MapFragment() {
+import com.example.meet_n_music.R;
+
+
+public class EventFragment extends Fragment {
+
+    public EventFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        return inflater.inflate(R.layout.fragment_event, container, false);
     }
 }

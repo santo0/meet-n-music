@@ -1,9 +1,8 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,18 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.meet_n_music.model.Event;
-import com.example.meet_n_music.repository.Repo;
-import com.example.meet_n_music.viewmodel.EventViewModel;
-
-import java.util.ArrayList;
+import com.example.meet_n_music.EventListAdapter;
+import com.example.meet_n_music.R;
+import com.example.meet_n_music.repository.EventRepository;
+import com.example.meet_n_music.viewmodel.FeedViewModel;
 
 
 public class EventListFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private EventListAdapter adapter;
-    private EventViewModel eventViewModel;
+    private FeedViewModel feedViewModel;
     private Button syncBtn;
 
     public EventListFragment() {
@@ -54,15 +52,16 @@ public class EventListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        eventViewModel = new ViewModelProvider(this).get(EventViewModel.class);
-        eventViewModel.init();
-        eventViewModel.getEvents().observe(getViewLifecycleOwner(), events -> adapter.notifyDataSetChanged());
+        feedViewModel = new ViewModelProvider(this).get(FeedViewModel.class);
+        feedViewModel.init();
+        feedViewModel.getEventMutableLiveData().observe(getViewLifecycleOwner(), events -> adapter.notifyDataSetChanged());
         
-        adapter = new EventListAdapter(eventViewModel.getEvents().getValue());
+        adapter = new EventListAdapter();
+        adapter.setEvents(feedViewModel.getEventMutableLiveData().getValue());
         recyclerView.setAdapter(adapter);
 
         syncBtn = view.findViewById(R.id.syncBtn);
-        syncBtn.setOnClickListener(view1 -> Repo.getInstance().getEvents());
+        //syncBtn.setOnClickListener(view1 -> EventRepository.getInstance().getEvents());
 
         return view;
     }

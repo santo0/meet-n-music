@@ -1,7 +1,7 @@
 package com.example.meet_n_music.repository;
 
-import android.renderscript.Sampler;
 import android.util.Log;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -15,73 +15,43 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Repo {
-    private static Repo instance;
-    private ArrayList<Event> arrayListEvents = new ArrayList<>();
-    private MutableLiveData<ArrayList<Event>> mutableLiveDataEvent = new MutableLiveData<>();
+public class EventRepository {
+    private static EventRepository instance;
+    private static MutableLiveData<ArrayList<Event>> eventsLiveData;
 
-    public static Repo getInstance() {
+
+    public static EventRepository getInstance() {
         if (instance == null) {
-            instance = new Repo();
+            instance = new EventRepository();
+            eventsLiveData = new MutableLiveData<>();
+            eventsLiveData.setValue(new ArrayList<>());
         }
         return instance;
     }
 
-    public MutableLiveData<ArrayList<Event>> getEvents() {
-        /**
-         * BE AWARE OF THIS CONDITION
-         * */
-        if (arrayListEvents.size() == 0){
-            mutableLiveDataEvent.setValue(arrayListEvents);
-        }
 
-        loadEvents();
-
-        Log.d("debugGetEvents", "Going to NY");
-        Log.d("debugGetEvents", String.valueOf(arrayListEvents.size()));
-        for (Event event : arrayListEvents) {
-            Log.d("debugGetEvents", event.getName());
-        }
-        return mutableLiveDataEvent;
-    }
-
-    private void loadEvents() {
-        readData(new FirebaseCallback() {
-            @Override
-            public void onCallback(ArrayList<Event> list) {
-                Log.d("callbackDebug", list.toString());
-                mutableLiveDataEvent.postValue(list);
-            }
-        });
-
-    }
-
-    private void readData(FirebaseCallback firebaseCallback) {
-        Log.d("debugFS", "Before references");
+    public MutableLiveData<ArrayList<Event>> getAllEvents() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Log.d("debugFS", "Got references");
         Query query = reference.child("Events");
-        Log.d("debugFS", "Got events");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayListEvents.clear();
+                ArrayList<Event> events = new ArrayList<>();
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     Event event = snap.getValue(Event.class);
                     event.setId(snap.getKey());
                     Log.d("debugFS", snap.getKey());
-                    arrayListEvents.add(event);
                     Log.d("debugFS", event.getId());
                     Log.d("debugFS", event.getName());
                     Log.d("debugFS", event.getDescription());
                     Log.d("debugFS", event.getCovid());
                     Log.d("debugFS", event.getGenre());
-
+                    events.add(event);
                 }
-                firebaseCallback.onCallback(arrayListEvents);
+                eventsLiveData.setValue(events);
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -91,11 +61,9 @@ public class Repo {
             }
         };
 
-        query.addListenerForSingleValueEvent(valueEventListener);
+        query.addValueEventListener(valueEventListener);
+
+        return eventsLiveData;
     }
 
-    private interface FirebaseCallback {
-        void onCallback(ArrayList<Event> list);
-
-    }
 }

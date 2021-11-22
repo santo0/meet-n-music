@@ -1,9 +1,10 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.util.Patterns;
@@ -16,17 +17,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.meet_n_music.R;
+import com.example.meet_n_music.model.User;
+import com.example.meet_n_music.viewmodel.AuthViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterFragment extends Fragment {
 
     public RegisterFragment() {
         // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,7 @@ public class RegisterFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.appbar_top).setVisibility(View.GONE);
     }
 
     @Override
@@ -51,18 +53,18 @@ public class RegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         mAuth = FirebaseAuth.getInstance();
         banner2 = (TextView) view.findViewById(R.id.banner2);
-        banner2.setOnClickListener(v ->{
+        banner2.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_registerFragment_to_startPageFragment);
-        } );
+        });
         username2 = (EditText) view.findViewById(R.id.username2);
         email2 = (EditText) view.findViewById(R.id.email2);
         psswrd2 = (EditText) view.findViewById(R.id.password2);
         rPsswrd2 = (EditText) view.findViewById(R.id.repeatPassword2);
         progressBar2 = (ProgressBar) view.findViewById(R.id.progressBar2);
         registerUser = (Button) view.findViewById(R.id.registerUser);
-        registerUser.setOnClickListener(v ->{
+        registerUser.setOnClickListener(v -> {
             registerUserFunction();
-        } );
+        });
         return view;
     }
 
@@ -110,24 +112,15 @@ public class RegisterFragment extends Fragment {
         }
 
         progressBar2.setVisibility(View.VISIBLE);
-        mAuth.createUserWithEmailAndPassword(emailString, psswrdString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
+        AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel.signUp(userString, "Rock", emailString, psswrdString).observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    User user = new User(userString, emailString);
-                    FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "User has been registered successfully!", Toast.LENGTH_LONG).show();
-                                progressBar2.setVisibility(View.GONE);
-                                Navigation.findNavController(getView()).navigate(R.id.action_registerFragment_to_startPageFragment);
-                            } else {
-                                Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
-                                progressBar2.setVisibility(View.GONE);
-                            }
-                        }
-                    });
+            public void onChanged(User user) {
+                if (user != null) {
+                    Toast.makeText(getActivity(), "User has been registered successfully!", Toast.LENGTH_LONG).show();
+                    progressBar2.setVisibility(View.GONE);
+                    Navigation.findNavController(getView()).navigate(R.id.action_registerFragment_to_startPageFragment);
                 } else {
                     Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar2.setVisibility(View.GONE);

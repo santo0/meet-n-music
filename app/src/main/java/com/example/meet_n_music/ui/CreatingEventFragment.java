@@ -1,4 +1,4 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

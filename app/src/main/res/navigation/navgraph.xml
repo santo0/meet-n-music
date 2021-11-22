@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startPageFragment"
-        android:name="com.example.meet_n_music.StartPageFragment"
+        android:name="com.example.meet_n_music.ui.StartPageFragment"
         android:label="fragment_start_page"
         tools:layout="@layout/fragment_start_page" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.meet_n_music.RegisterFragment"
+        android:name="com.example.meet_n_music.ui.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="com.example.meet_n_music.UserProfileFragment"
+        android:name="com.example.meet_n_music.ui.UserProfileFragment"
         android:label="UserProfileFragment" >
         <action
             android:id="@+id/action_userProfileFragment_to_feedFragment"
@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/feedFragment"
-        android:name="com.example.meet_n_music.FeedFragment"
+        android:name="com.example.meet_n_music.ui.FeedFragment"
         android:label="fragment_feed"
         tools:layout="@layout/fragment_feed" >
         <action
@@ -61,7 +61,7 @@
     </fragment>
     <fragment
         android:id="@+id/eventListFragment"
-        android:name="com.example.meet_n_music.EventListFragment"
+        android:name="com.example.meet_n_music.ui.EventListFragment"
         android:label="fragment_event_list"
         tools:layout="@layout/fragment_event_list" >
         <action
@@ -70,25 +70,25 @@
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
-        android:name="com.example.meet_n_music.ChangePasswordFragment"
+        android:name="com.example.meet_n_music.ui.ChangePasswordFragment"
         android:label="ChangePasswordFragment" />
     <fragment
         android:id="@+id/changeEmailFragment"
-        android:name="com.example.meet_n_music.ChangeEmailFragment"
+        android:name="com.example.meet_n_music.ui.ChangeEmailFragment"
         android:label="ChangeEmailFragment" />
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.meet_n_music.SearchFragment"
+        android:name="com.example.meet_n_music.ui.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.meet_n_music.MapFragment"
+        android:name="com.example.meet_n_music.ui.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
     <fragment
         android:id="@+id/creatingEventFragment"
-        android:name="com.example.meet_n_music.CreatingEventFragment"
+        android:name="com.example.meet_n_music.ui.CreatingEventFragment"
         android:label="CreatingEventFragment" >
         <action
             android:id="@+id/action_creatingEventFragment_to_feedFragment"
@@ -96,7 +96,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewEventFragment"
-        android:name="com.example.meet_n_music.ViewEventFragment"
+        android:name="com.example.meet_n_music.ui.ViewEventFragment"
         android:label="fragment_view_event"
         tools:layout="@layout/fragment_view_event" >
         <action
@@ -107,5 +107,15 @@
             app:argType="string"
             android:defaultValue="Error" />
     </fragment>
+    <fragment
+        android:id="@+id/userCreatedEventsFragment"
+        android:name="com.example.meet_n_music.ui.UserCreatedEventsFragment"
+        android:label="fragment_user_created_events"
+        tools:layout="@layout/fragment_user_created_events" />
+    <fragment
+        android:id="@+id/userToAttendEventsFragment"
+        android:name="com.example.meet_n_music.ui.UserToAttendEventsFragment"
+        android:label="fragment_user_to_attend_events"
+        tools:layout="@layout/fragment_user_to_attend_events" />
 
 </navigation>
