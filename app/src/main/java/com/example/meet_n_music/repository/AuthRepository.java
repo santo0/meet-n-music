@@ -2,10 +2,8 @@ package com.example.meet_n_music.repository;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
-import com.example.meet_n_music.User;
-import com.google.android.gms.auth.api.Auth;
+import com.example.meet_n_music.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

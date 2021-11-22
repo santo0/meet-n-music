@@ -1,9 +1,10 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.util.Patterns;
@@ -16,9 +17,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.meet_n_music.R;
+import com.example.meet_n_music.model.User;
+import com.example.meet_n_music.viewmodel.AuthViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -43,6 +44,7 @@ public class StartPageFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.appbar_top).setVisibility(View.GONE);
     }
 
     @Override
@@ -95,12 +97,35 @@ public class StartPageFragment extends Fragment {
         }
 
         progressBar1.setVisibility(View.VISIBLE);
+
+        AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+
+        authViewModel.signIn(emailString,passwordString);
+
+        authViewModel.getCurrentUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if(user != null) {
+                    Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
+                    progressBar1.setVisibility(View.GONE);
+                    ((TextView)getActivity().findViewById(R.id.header_username)).setText(user.username); // Put username on drawer header
+                    Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
+
+                } else {
+                    Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
+                    progressBar1.setVisibility(View.GONE);
+                }
+            }
+        });
+/*
         mAuth.signInWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
+                    UserRepository.getInstance(getActivity().getApplication());
                     Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
+                    ((TextView)getActivity().findViewById(R.id.header_username)).setText(mAuth.getUid()); // Put username on drawer header
                     Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
                 }else{
                     Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
@@ -108,6 +133,8 @@ public class StartPageFragment extends Fragment {
                 }
             }
         });
+
+ */
 
     }
 }

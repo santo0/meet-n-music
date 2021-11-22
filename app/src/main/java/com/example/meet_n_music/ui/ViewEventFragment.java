@@ -1,4 +1,4 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

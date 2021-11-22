@@ -1,12 +1,10 @@
 package com.example.meet_n_music.viewmodel;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.meet_n_music.User;
+import com.example.meet_n_music.model.User;
 import com.example.meet_n_music.repository.AuthRepository;
-import com.google.firebase.database.DataSnapshot;
 
 public class AuthViewModel extends ViewModel {
     private AuthRepository authRepository;

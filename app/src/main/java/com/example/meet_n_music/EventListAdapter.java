@@ -10,6 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.meet_n_music.model.Event;
+import com.example.meet_n_music.ui.FeedFragmentDirections;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,11 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
 
     private ArrayList<Event> events;
 
-    public EventListAdapter(ArrayList<Event> events) {
+    public EventListAdapter() {
+//        this.events = events;
+    }
+
+    public void setEvents(ArrayList<Event> events) {
         this.events = events;
     }
 

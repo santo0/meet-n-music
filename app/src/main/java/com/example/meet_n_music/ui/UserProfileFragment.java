@@ -1,4 +1,4 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -6,21 +6,18 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Objects;
+import com.example.meet_n_music.R;
+import com.example.meet_n_music.model.User;
+import com.example.meet_n_music.repository.AuthRepository;
 
 public class UserProfileFragment extends Fragment {
 
@@ -76,9 +73,10 @@ public class UserProfileFragment extends Fragment {
         lEnglish = view.findViewById(R.id.english);
         lDanish = view.findViewById(R.id.danish);
 
-        //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        UserRepository userRepository = new UserRepository(requireActivity().getApplication());
-        FirebaseUser user = userRepository.getCurrentUser().getValue();
+
+        AuthRepository authRepository = AuthRepository.getAuthRepository();
+        MutableLiveData<User> userMutableLiveData= authRepository.getCurrentUser();
+        User user = userMutableLiveData.getValue();
 
         if (user == null) {
             throw new NullPointerException();
@@ -86,14 +84,15 @@ public class UserProfileFragment extends Fragment {
 
         //Show username
         //TODO
-        username.setText(user.toString());
+        username.setText(user.username);
 
         //Show user profile photo
         //TODO
+        /*
         Glide.with(this)
                 .load(user.getPhotoUrl())
                 .override(90, 90)
-                .into(profilePhoto);
+                .into(profilePhoto);*/
 
         //Change user profile photo
         changePhoto.setOnClickListener(l -> {
@@ -106,7 +105,7 @@ public class UserProfileFragment extends Fragment {
 
         //Show email
         //TODO
-        profileEmail.setText(user.getEmail());
+        profileEmail.setText(user.email);
 
         //Change user email
         changeEmail.setOnClickListener(l -> {
