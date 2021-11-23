@@ -1,13 +1,24 @@
 package com.example.meet_n_music.ui;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -24,16 +36,21 @@ import android.widget.Toast;
 
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
+import com.example.meet_n_music.repository.ImageRepository;
+import com.example.meet_n_music.viewmodel.CreateEventViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 
 public class CreatingEventFragment extends Fragment {
+
+    private static final int PICK_IMAGE_REQUEST = 234;
 
     public CreatingEventFragment() {
         // Required empty public constructor
@@ -54,41 +71,84 @@ public class CreatingEventFragment extends Fragment {
 
     private Spinner genreSelector;
     private ListView covidRestrictions;
-    private EditText eventName,  eventDescription, location;
+    private EditText eventName, eventDescription, location;
     private View createEvent;
     private Button startDate;
     private DatePickerDialog startDateEventDialog;
     private ProgressBar progressBar3;
-    private FirebaseDatabase db;
-    private DatabaseReference reference;
+    private Uri filePath;
+    ImageView imagePlaceholder;
+    CreateEventViewModel createEventViewModel;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_creating_event, container, false);
+
+        createEventViewModel = new ViewModelProvider(this).get(CreateEventViewModel.class);
+
         eventName = (EditText) view.findViewById(R.id.eventName);
         eventDescription = (EditText) view.findViewById(R.id.EventDescription);
         location = (EditText) view.findViewById(R.id.location);
         progressBar3 = (ProgressBar) view.findViewById(R.id.progressBar3);
+
         initDatePicker();
         startDate = (Button) view.findViewById(R.id.eventStartDate);
         startDate.setOnClickListener(v -> openStartDate(v));
         startDate.setText(getTodaysDate());
+
         genreSelector = (Spinner) view.findViewById(R.id.genreSelection);
-        ArrayAdapter<String> genreAdaptor = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Genres));
+        ArrayAdapter<String> genreAdaptor = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Genres));
         genreAdaptor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genreSelector.setAdapter(genreAdaptor);
+
         covidRestrictions = (ListView) view.findViewById(R.id.CovidRestrictions);
-        ArrayAdapter<String> covidAdaptor = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.CovidRestrictions));
+        ArrayAdapter<String> covidAdaptor = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.CovidRestrictions));
         covidRestrictions.setAdapter(covidAdaptor);
+
         //Images
+        View picUploadButton = view.findViewById(R.id.uploadPhotoIcon);
+        imagePlaceholder = view.findViewById(R.id.uploadPhotoImage);
+        picUploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFileChooser();
+            }
+        });
+
         createEvent = (View) view.findViewById(R.id.createEvent);
         createEvent.setOnClickListener(v -> {
             newEvent();
         });
+
+
         return view;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
+                imagePlaceholder.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select an Image"), PICK_IMAGE_REQUEST);
+    }
+
 
     private String getTodaysDate() {
         Calendar cal = Calendar.getInstance();
@@ -99,7 +159,7 @@ public class CreatingEventFragment extends Fragment {
         return makeDateString(day, month, year);
     }
 
-    private void initDatePicker(){
+    private void initDatePicker() {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -109,6 +169,7 @@ public class CreatingEventFragment extends Fragment {
             }
         };
         Calendar cal = Calendar.getInstance();
+
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -116,6 +177,7 @@ public class CreatingEventFragment extends Fragment {
         int style = AlertDialog.THEME_HOLO_LIGHT;
         startDateEventDialog = new DatePickerDialog(getActivity(), style, dateSetListener, year, month, day);
     }
+
     private void openStartDate(View view) {
         startDateEventDialog.show();
     }
@@ -125,40 +187,40 @@ public class CreatingEventFragment extends Fragment {
     }
 
     private String getMonthFormat(int month) {
-        if (month == 1){
+        if (month == 1) {
             return "01";
         }
-        if (month == 2){
+        if (month == 2) {
             return "02";
         }
-        if (month == 3){
+        if (month == 3) {
             return "03";
         }
-        if (month == 4){
+        if (month == 4) {
             return "04";
         }
-        if (month == 5){
+        if (month == 5) {
             return "05";
         }
-        if (month == 6){
+        if (month == 6) {
             return "06";
         }
-        if (month == 7){
+        if (month == 7) {
             return "07";
         }
-        if (month == 8){
+        if (month == 8) {
             return "08";
         }
-        if (month == 9){
+        if (month == 9) {
             return "09";
         }
-        if (month == 10){
+        if (month == 10) {
             return "10";
         }
-        if (month == 11){
+        if (month == 11) {
             return "11";
         }
-        if (month == 12){
+        if (month == 12) {
             return "12";
         }
         // Default should never happen.
@@ -174,56 +236,77 @@ public class CreatingEventFragment extends Fragment {
         String eventGenre;
         String eventCovidRestrictionString = "";
 
-        if(eventNameString.isEmpty()){
+        if (eventNameString.isEmpty()) {
             eventName.setError("Event name is required!");
             eventName.requestFocus();
             return;
         }
 
-        if(eventDescriptionString.isEmpty()){
+        if (eventDescriptionString.isEmpty()) {
             eventDescription.setError("Event description is required!");
             eventDescription.requestFocus();
             return;
         }
 
-        if(locationString.isEmpty()){
+        if (locationString.isEmpty()) {
             location.setError("Location is required!");
             location.requestFocus();
             return;
         }
 
         eventGenre = genreSelector.getSelectedItem().toString();
-        for (int i=0; i<covidRestrictions.getCount(); i++){
-            if (covidRestrictions.isItemChecked(i)){
+        for (int i = 0; i < covidRestrictions.getCount(); i++) {
+            if (covidRestrictions.isItemChecked(i)) {
                 eventCovidRestrictionString += covidRestrictions.getItemAtPosition(i) + ", ";
             }
         }
         eventCovidRestrictionString = eventCovidRestrictionString.replaceAll(", $", "");
-        /*Toast.makeText(getActivity(), eventGenre, Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), eventCovidRestrictionString, Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), startEventDateString, Toast.LENGTH_SHORT).show();*/
 
-        //Guardar informació en un nou Event class (a la database) + tornar al feed.
+        Log.d("CreatingEventFragment", "1");
         progressBar3.setVisibility(View.VISIBLE);
-        db = FirebaseDatabase.getInstance();
-        reference = db.getReference("Events");
         Event event = new Event(eventNameString, eventDescriptionString, locationString, startEventDateString, eventGenre, eventCovidRestrictionString);
-        reference.push().setValue(event).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
-                    progressBar3.setVisibility(View.GONE);
+        MutableLiveData<Event> eventMutableLiveData = new MutableLiveData<>();
+        MutableLiveData<Uri> uriMutableLiveData = new MutableLiveData<>();
+        eventMutableLiveData.setValue(event);
+        uriMutableLiveData.setValue(filePath);
+        Log.d("CreatingEventFragment", "2");
 
-                    Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_feedFragment);
+        createEventViewModel.setEvent(eventMutableLiveData, uriMutableLiveData);
+
+        Log.d("CreatingEventFragment", "3");
+        eventMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Event>() {
+            @Override
+            public void onChanged(Event event) {
+                if (event != null) {
+//                    Log.d("CreatingEventFragment", event.getId());
+                    Log.d("CreatingEventFragment", event.getName());
+                    String imagePath = event.getId() + "/" + event.getId() + ".jpg";
+                    ImageRepository.getInstance().uploadImage(imagePath, uriMutableLiveData);
+                    uriMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Uri>() {
+                        @Override
+                        public void onChanged(Uri uri) {
+                            if (uri != null) {
+                                Log.d("creatingEventFragment", event.getName());
+                                Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
+                                progressBar3.setVisibility(View.GONE);
+
+                                Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_feedFragment);
+                            } else {
+                                Log.d("creatingEventFragment", "it is null");
+                                Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
+                                progressBar3.setVisibility(View.GONE);
+                            }
+                        }
+                    });
 
                 } else {
+                    Log.d("creatingEventFragment", "it is null");
                     Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar3.setVisibility(View.GONE);
                 }
             }
         });
-
+        Log.d("CreatingEventFragment", "4");
     }
 
 }

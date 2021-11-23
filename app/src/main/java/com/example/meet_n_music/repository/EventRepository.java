@@ -1,12 +1,18 @@
 package com.example.meet_n_music.repository;
 
 import android.util.Log;
+import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.navigation.Navigation;
 
+import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +34,27 @@ public class EventRepository {
             eventsLiveData.setValue(new ArrayList<>());
         }
         return instance;
+    }
+
+
+    public void setEvent(MutableLiveData<Event> event) {
+//        Event event = new Event(eventNameString, eventDescriptionString, locationString, startEventDateString, eventGenre, eventCovidRestrictionString);
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Events");
+        String eventId = dbRef.push().getKey();
+        event.getValue().setId(eventId);
+        Log.d("EventRepository", "Before: " + eventId);
+        dbRef.child(eventId).setValue(event.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d("EventRepository", "After: " + eventId);
+                     event.setValue(event.getValue());//notify UI completed
+                } else {
+                    Log.d("EventRepository", "NULL!!!");
+                    event.setValue(null);//notify UI not completed
+                }
+            }
+        });
     }
 
 
