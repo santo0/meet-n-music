@@ -3,6 +3,7 @@ package com.example.meet_n_music.model;
 public class Event {
     private String id, name, description, location, startDate, genre, covid;
 
+
     public Event(){
         this.name = "ERROR_NAME";
         this.description = "ERROR_DESCRIPTION";
@@ -32,6 +33,7 @@ public class Event {
         this.covid = covid;
     }
 
+    //setId
     public void setId(String id) { this.id = id;}
     public String getId() {return this.id;}
     public String getDescription() {
@@ -54,7 +56,24 @@ public class Event {
         return genre;
     }
 
-    public String getCovid() {
-        return covid;
+    public String getCovid() { return covid;
+    }
+
+    public String getImagePath() {
+        return getId() + "/" + getId() + ".jpg";
+    }
+
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", startDate='" + startDate + '\'' +
+                ", genre='" + genre + '\'' +
+                ", covid='" + covid + '\'' +
+                '}';
     }
 }

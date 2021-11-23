@@ -6,24 +6,18 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -32,25 +26,34 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
-import com.example.meet_n_music.repository.ImageRepository;
+import com.example.meet_n_music.model.EventGeographicalLocation;
 import com.example.meet_n_music.viewmodel.CreateEventViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class CreatingEventFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 234;
+    private static final String TAG = "CreatingEventFragment";
 
     public CreatingEventFragment() {
         // Required empty public constructor
@@ -62,6 +65,10 @@ public class CreatingEventFragment extends Fragment {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
+        ((DrawerLayout)((AppCompatActivity)getActivity()).findViewById(R.id.drawer_layout)).setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        //((Menu)((NavigationView)getActivity().findViewById(R.id.navigation_view)).getMenu()).findItem(R.id.);
     }
 
     @Override
@@ -69,9 +76,10 @@ public class CreatingEventFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
     private Spinner genreSelector;
     private ListView covidRestrictions;
-    private EditText eventName, eventDescription, location;
+    private EditText eventName, eventDescription, locationInput;
     private View createEvent;
     private Button startDate;
     private DatePickerDialog startDateEventDialog;
@@ -79,6 +87,7 @@ public class CreatingEventFragment extends Fragment {
     private Uri filePath;
     ImageView imagePlaceholder;
     CreateEventViewModel createEventViewModel;
+    MutableLiveData<EventGeographicalLocation> geographicalLocationLiveData;
 
 
     @Override
@@ -91,7 +100,7 @@ public class CreatingEventFragment extends Fragment {
 
         eventName = (EditText) view.findViewById(R.id.eventName);
         eventDescription = (EditText) view.findViewById(R.id.EventDescription);
-        location = (EditText) view.findViewById(R.id.location);
+        locationInput = (EditText) view.findViewById(R.id.locationInputSearch);
         progressBar3 = (ProgressBar) view.findViewById(R.id.progressBar3);
 
         initDatePicker();
@@ -118,6 +127,20 @@ public class CreatingEventFragment extends Fragment {
             }
         });
 
+        locationInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
+                    geoLocate();
+                }
+                return false;
+
+            }
+        });
+
         createEvent = (View) view.findViewById(R.id.createEvent);
         createEvent.setOnClickListener(v -> {
             newEvent();
@@ -125,6 +148,26 @@ public class CreatingEventFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void geoLocate() {
+        Log.d(TAG, "geoLocate: geolocating");
+        String searchString = locationInput.getText().toString();
+        Geocoder geocoder = new Geocoder(getContext());
+        List<Address> list = new ArrayList<>();
+        try {
+            list = geocoder.getFromLocationName(searchString, 1);
+        } catch (IOException e) {
+            Log.e(TAG, "geoLocate: IOException: " + e.getMessage());
+        }
+        if (list.size() > 0) {
+            Address address = list.get(0);
+            Log.d(TAG, "geoLocate: found a location: " + address.toString());
+            Toast.makeText(getActivity(), address.toString(), Toast.LENGTH_SHORT).show();
+            //addressLines(list), latitude, longitude
+            //if not addressLines, Locality, thoroughfare
+            geographicalLocationLiveData = new MutableLiveData<>(new EventGeographicalLocation(address.getAddressLine(0), address.getLatitude(), address.getLongitude()));
+        }
     }
 
     @Override
@@ -231,7 +274,7 @@ public class CreatingEventFragment extends Fragment {
 
         String eventNameString = eventName.getText().toString().trim();
         String eventDescriptionString = eventDescription.getText().toString().trim();
-        String locationString = location.getText().toString().trim();
+        String locationString = locationInput.getText().toString().trim();
         String startEventDateString = startDate.getText().toString().trim();
         String eventGenre;
         String eventCovidRestrictionString = "";
@@ -249,8 +292,8 @@ public class CreatingEventFragment extends Fragment {
         }
 
         if (locationString.isEmpty()) {
-            location.setError("Location is required!");
-            location.requestFocus();
+            locationInput.setError("Location is required!");
+            locationInput.requestFocus();
             return;
         }
 
@@ -271,7 +314,7 @@ public class CreatingEventFragment extends Fragment {
         uriMutableLiveData.setValue(filePath);
         Log.d("CreatingEventFragment", "2");
 
-        createEventViewModel.setEvent(eventMutableLiveData, uriMutableLiveData);
+        createEventViewModel.setEvent(eventMutableLiveData);
 
         Log.d("CreatingEventFragment", "3");
         eventMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Event>() {
@@ -281,18 +324,31 @@ public class CreatingEventFragment extends Fragment {
 //                    Log.d("CreatingEventFragment", event.getId());
                     Log.d("CreatingEventFragment", event.getName());
                     String imagePath = event.getId() + "/" + event.getId() + ".jpg";
-                    ImageRepository.getInstance().uploadImage(imagePath, uriMutableLiveData);
+                    createEventViewModel.setEventImage(imagePath, uriMutableLiveData);
+//                    ImageRepository.getInstance().uploadImage(imagePath, uriMutableLiveData);
                     uriMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Uri>() {
                         @Override
                         public void onChanged(Uri uri) {
                             if (uri != null) {
-                                Log.d("creatingEventFragment", event.getName());
-                                Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
-                                progressBar3.setVisibility(View.GONE);
+                                createEventViewModel.setGeoLocation(event.getId(), geographicalLocationLiveData);
+                                geographicalLocationLiveData.observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
+                                    @Override
+                                    public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
+                                        if (eventGeographicalLocation != null) {
+                                            Log.d(TAG, event.getName());
+                                            Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
+                                            progressBar3.setVisibility(View.GONE);
 
-                                Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_feedFragment);
+                                            Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_feedFragment);
+                                        } else {
+                                            Log.d(TAG, "it is null");
+                                            Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
+                                            progressBar3.setVisibility(View.GONE);
+                                        }
+                                    }
+                                });
                             } else {
-                                Log.d("creatingEventFragment", "it is null");
+                                Log.d(TAG, "it is null");
                                 Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                                 progressBar3.setVisibility(View.GONE);
                             }
@@ -300,7 +356,7 @@ public class CreatingEventFragment extends Fragment {
                     });
 
                 } else {
-                    Log.d("creatingEventFragment", "it is null");
+                    Log.d(TAG, "it is null");
                     Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar3.setVisibility(View.GONE);
                 }
