@@ -2,6 +2,8 @@ package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,7 +29,6 @@ public class StartPageFragment extends Fragment {
     public StartPageFragment() {
         // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +46,7 @@ public class StartPageFragment extends Fragment {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.GONE);
+        ((MainActivity)getActivity()).lockDrawerMenu();
     }
 
     @Override
@@ -117,24 +119,5 @@ public class StartPageFragment extends Fragment {
                 }
             }
         });
-/*
-        mAuth.signInWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    UserRepository.getInstance(getActivity().getApplication());
-                    Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
-                    progressBar1.setVisibility(View.GONE);
-                    ((TextView)getActivity().findViewById(R.id.header_username)).setText(mAuth.getUid()); // Put username on drawer header
-                    Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
-                }else{
-                    Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
-                    progressBar1.setVisibility(View.GONE);
-                }
-            }
-        });
-
- */
-
     }
 }

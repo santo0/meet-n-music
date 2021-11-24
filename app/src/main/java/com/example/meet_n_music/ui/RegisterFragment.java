@@ -44,6 +44,7 @@ public class RegisterFragment extends Fragment {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.GONE);
+        ((MainActivity)getActivity()).lockDrawerMenu();
     }
 
     @Override
