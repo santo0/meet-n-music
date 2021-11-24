@@ -4,6 +4,10 @@ public class EventGeographicalLocation {
     String eventId, name;
     double lat, lng;
 
+    public EventGeographicalLocation(){
+
+    }
+
     public EventGeographicalLocation(String name, double lat, double lng) {
         this.name = name;
         this.lat = lat;
