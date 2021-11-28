@@ -4,11 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.SearchFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
+        <Spinner
+            android:id="@+id/genreSearch"
+            android:layout_width="350dp"
+            android:layout_height="53dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="25dp"/>
+        <Button
+            android:id="@+id/searchButtonGenre"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:text="SEARCH"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/purple_200"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="20dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewGenre"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:background="@color/purple_200"/>
+    </LinearLayout>
 
 </FrameLayout>

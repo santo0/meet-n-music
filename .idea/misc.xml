@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/arnau/AndroidStudioProjects/meet-n-music/app/src/main/res/layout/fragment_creating_event.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/arnau/AndroidStudioProjects/meet-n-music/app/src/main/res/layout/fragment_event_list.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/arnau/AndroidStudioProjects/meet-n-music/app/src/main/res/layout/fragment_feed.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/arnau/AndroidStudioProjects/meet-n-music/app/src/main/res/layout/fragment_search.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/arnau/AndroidStudioProjects/meet-n-music/app/src/main/res/layout/fragment_search_genre.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/arnau/AndroidStudioProjects/meet-n-music/app/src/main/res/layout/fragment_start_page.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University College/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/fragment_change_email.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University College/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/fragment_change_email2.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University College/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/fragment_change_password.xml" value="0.36666666666666664" />
