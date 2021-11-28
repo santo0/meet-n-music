@@ -1,4 +1,4 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.meet_n_music.R;
 
 public class ChangePasswordFragment extends Fragment {
 
@@ -39,7 +41,7 @@ public class ChangePasswordFragment extends Fragment {
         Button submitButton = view.findViewById(R.id.submitPassword);
         submitButton.setOnClickListener(l -> {
             //TODO
-            if (currentPassword.equals(/***User password***/)) {
+            if (currentPassword.equals("***User password***")) {
                 if (newPassword.equals(confirmPassword)) {
                     //TODO
                     //Change password
