@@ -56,7 +56,7 @@ public class EventListFragment extends Fragment {
         feedViewModel.init();
         feedViewModel.getEventMutableLiveData().observe(getViewLifecycleOwner(), events -> adapter.notifyDataSetChanged());
         
-        adapter = new EventListAdapter();
+        adapter = new EventListAdapter(getContext());
         adapter.setEvents(feedViewModel.getEventMutableLiveData().getValue());
         recyclerView.setAdapter(adapter);
 
