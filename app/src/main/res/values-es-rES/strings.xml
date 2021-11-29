@@ -17,4 +17,6 @@
     <string name="new_email_">Nuevo email:</string>
     <string name="your_current_email">Tu email actual</string>
     <string name="current_email">Email actual</string>
+    <string name="nav_drawe_open">OPEN!</string>
+    <string name="nav_drawe_close">CLOSE!</string>
 </resources>

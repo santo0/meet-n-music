@@ -17,6 +17,8 @@
     <string name="new_email_" translatable="false">New email:</string>
     <string name="your_current_email" translatable="false">Your current email</string>
     <string name="current_email" translatable="false">Current email:</string>
+    <string name="nav_drawe_open">OPEN!</string>
+    <string name="nav_drawe_close">CLOSE!</string>
     <string-array name="Genres">
         <item>Latin</item>
         <item>Hip-hop</item>

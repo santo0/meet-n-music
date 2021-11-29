@@ -32,6 +32,8 @@ public class UserProfileFragment extends Fragment {
     TextView profileEmail;
     Button changeEmail;
 
+    Button logoutBtn;
+
     Button changePassword;
 
     ImageView lSpanish;
@@ -125,6 +127,15 @@ public class UserProfileFragment extends Fragment {
             config.locale = localization;
             getActivity().getBaseContext().getResources().updateConfiguration(config,
                     getActivity().getBaseContext().getResources().getDisplayMetrics());
+        });
+
+        logoutBtn = view.findViewById(R.id.logout);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AuthRepository.getAuthRepository().firebaseSignOut();
+                Navigation.findNavController(view).navigate(R.id.action_userProfileFragment_to_startPageFragment);
+            }
         });
 
         return view;

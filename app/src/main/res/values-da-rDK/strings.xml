@@ -17,4 +17,6 @@
     <string name="new_email_" translatable="false">Ny email:</string>
     <string name="your_current_email" translatable="false">Din nuværende email</string>
     <string name="current_email" translatable="false">Nuværende email:</string>
+    <string name="nav_drawe_open">OPEN!</string>
+    <string name="nav_drawe_close">CLOSE!</string>
 </resources>
