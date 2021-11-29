@@ -37,6 +37,7 @@
             android:layout_toRightOf="@id/ic_magnify"
             android:layout_centerVertical="true"
             android:textSize="15sp"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:id="@+id/input_search"
             android:background="@null"

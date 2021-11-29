@@ -7,27 +7,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
-    android:background="@android:color/holo_blue_dark">
+    android:background="@color/primary_variant">
 
-    <ImageView
-        android:id="@+id/header_pic"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_margin="20dp"
-        android:src="@drawable/user_icon"
-        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium.Inverse"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/header_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="20dp"
-
-        android:layout_toRightOf="@id/header_pic"
-        android:text="PLACEHOLDER_USERNAME"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium.Inverse" />
+        android:layout_marginTop="55dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="placeholder_username"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium.Inverse"
+        android:textColor="@color/white"
+        android:textSize="18dp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

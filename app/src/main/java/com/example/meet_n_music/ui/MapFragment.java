@@ -4,48 +4,54 @@ package com.example.meet_n_music.ui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.navigation.Navigation;
 
 import com.example.meet_n_music.R;
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import com.example.meet_n_music.api.GeoLocationManager;
+import com.example.meet_n_music.model.Event;
+import com.example.meet_n_music.model.EventGeographicalLocation;
+import com.example.meet_n_music.repository.EventRepository;
+import com.example.meet_n_music.repository.GeoLocationRepository;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private EditText mSearchText;
 
+    private View rootView;
     private GoogleMap mMap;
     private static final String TAG = "MapFragment";
     private static final int ERROR_DIALOG_REQUEST = 9001;
@@ -57,6 +63,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    //    MutableLiveData<ArrayList<MarkerOptions>> markerOptionsMutableLiveData;
+//    MutableLiveData<HashMap<Marker, EventGeographicalLocation>> hashMapMutableLiveData;
+    MutableLiveData<HashMap<Marker, String>> idHashMapMutableLiveData;
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -64,7 +74,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).lockDrawerMenu();
+        ((MainActivity) getActivity()).lockDrawerMenu();
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
     }
 
     @Override
@@ -78,6 +91,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        rootView = view;
         mSearchText = (EditText) view.findViewById(R.id.input_search);
 
         getLocationPermission();
@@ -99,36 +113,65 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || keyEvent.getAction() == KeyEvent.ACTION_DOWN
                         || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
-                    geoLocate();
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+                    GeoLocationManager.geoLocate(mSearchText.getText().toString().trim()).observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
+                        @Override
+                        public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
+                            if (eventGeographicalLocation != null) {
+                                Toast.makeText(getActivity(), eventGeographicalLocation.getName(), Toast.LENGTH_SHORT).show();
+                                moveCamera(new LatLng(eventGeographicalLocation.getLat(), eventGeographicalLocation.getLng()), DEFAULT_ZOOM);
+                            } else {
+                                Toast.makeText(getActivity(), "Can't find location", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
                 return false;
 
             }
         });
-    }
 
-    private void geoLocate() {
-        Log.d(TAG, "geoLocate: geolocating");
-         String searchString = mSearchText.getText().toString();
-        Geocoder geocoder = new Geocoder(getContext());
-        List<Address> list = new ArrayList<>();
-        try {
-            list = geocoder.getFromLocationName(searchString, 1);
-        }catch(IOException e) {
-            Log.e(TAG, "geoLocate: IOException: " + e.getMessage());
-        }
-        if(list.size() > 0) {
-            Address address = list.get(0);
-            Log.d(TAG, "geoLocate: found a location: " + address.toString());
-            Toast.makeText(getActivity(), address.toString(), Toast.LENGTH_SHORT).show();
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM);
-        }
     }
-
     private void initMap() {
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        GeoLocationRepository.getInstance().getAllEventGeoLocations().observe(getViewLifecycleOwner(), new Observer<ArrayList<Pair<String, EventGeographicalLocation>>>() {
+            @Override
+            public void onChanged(ArrayList<Pair<String, EventGeographicalLocation>> eventGeographicalLocations) {
+                Log.d(TAG, "We have geolocations!");
+                if (eventGeographicalLocations != null) {
+                    if (idHashMapMutableLiveData == null) {
+                        Log.d(TAG, "Initialize hashmap for markers");
+                        idHashMapMutableLiveData = new MutableLiveData<>();
+                    } else {
+                        for (Marker marker : idHashMapMutableLiveData.getValue().keySet()) {
+                            marker.remove();
+                        }
+                    }
+                    HashMap<Marker, String> idHashMapMarkers = new HashMap<>();
+                    for (Pair<String, EventGeographicalLocation> geoLocPair : eventGeographicalLocations) {
+                        String eventId = geoLocPair.first;
+                        EventGeographicalLocation geoLoc = geoLocPair.second;
+                        Log.d(TAG, eventId);
+                        Log.d(TAG, geoLoc.getName());
+                        EventRepository.getInstance().getEventById(eventId).observe(getViewLifecycleOwner(), new Observer<Event>() {
+                            @Override
+                            public void onChanged(Event event) {
+                                if(event != null){
+                                    MarkerOptions markerOptions = new MarkerOptions();
+                                    markerOptions.position(new LatLng(geoLoc.getLat(), geoLoc.getLng()));
+                                    markerOptions.title(event.getName());
+                                    idHashMapMarkers.put(mMap.addMarker(markerOptions), eventId);
+                                }
+                            }
+                        });
 
+                    }
+                    idHashMapMutableLiveData.setValue(idHashMapMarkers);
+                }
+            }
+        });
     }
 
     private void getDeviceLocation() {
@@ -224,6 +267,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         }
 
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                Log.d(TAG, "You have clicked a marker");
+                if (idHashMapMutableLiveData != null && idHashMapMutableLiveData.getValue() != null && idHashMapMutableLiveData.getValue().get(marker) != null) {
+                    String eventId = idHashMapMutableLiveData.getValue().get(marker);
+                    Log.d(TAG, "You have clicked marker with event id " + eventId);
+                    MapFragmentDirections.ActionMapFragmentToViewEventFragment action = MapFragmentDirections.actionMapFragmentToViewEventFragment();
+                    action.setEventId(eventId);
+                    Navigation.findNavController(rootView).navigate(action);
+                } else {
+                    Log.d(TAG, "Can't find referenced marker");
+                }
+                return false;
+            }
+        });
 
     }
 }

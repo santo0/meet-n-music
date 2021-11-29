@@ -124,7 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="93dp"
-        android:backgroundTint="@color/purple_200"
+        android:backgroundTint="@color/primary"
         android:fontFamily="sans-serif-black"
         android:text="@string/log_out"
         android:textColor="@color/white"
