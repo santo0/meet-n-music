@@ -57,35 +57,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginBottom="9dp"
         android:fontFamily="sans-serif-black"
         android:text="@string/current_password"
         android:textSize="15sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/currentPassword"
+        app:layout_constraintBottom_toBottomOf="@+id/currentPassword"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/currentPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         android:hint="@string/your_current_password"
         android:inputType="textPassword"
         android:textSize="15sp"
-        app:layout_constraintStart_toEndOf="@+id/currentPasswordT"
+        app:layout_constraintStart_toStartOf="@+id/confirmEmail"
         app:layout_constraintTop_toBottomOf="@+id/confirmEmail" />
 
     <Button
         android:id="@+id/submitEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="130dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="49dp"
         android:backgroundTint="@color/primary"
         android:fontFamily="sans-serif-black"
         android:text="@string/submit"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/currentPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/currentPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
