@@ -80,10 +80,12 @@ public class UserProfileFragment extends Fragment {
         }
 
         //Show username
-        username.setText(user.username);
+        String userToShow = "Username: " + user.username;
+        username.setText(userToShow);
 
         //Show email
-        profileEmail.setText(user.email);
+        String emailToShow = "Email: " + user.email;
+        profileEmail.setText(emailToShow);
 
         //Change user email
         changeEmail.setOnClickListener(l -> {
