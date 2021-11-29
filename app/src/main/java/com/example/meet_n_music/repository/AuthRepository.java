@@ -172,4 +172,9 @@ public class AuthRepository {
                 });
         return completed;
     }
+
+    public void firebaseSignOut(){
+        firebaseAuth.signOut();
+        currentUser = new MutableLiveData<>();
+    }
 }
