@@ -109,7 +109,7 @@ public class EditEventFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
         ((MainActivity) getActivity()).lockDrawerMenu();
