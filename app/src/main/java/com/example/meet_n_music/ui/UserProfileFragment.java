@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,9 +68,9 @@ public class UserProfileFragment extends Fragment {
 
         changePassword = view.findViewById(R.id.change_password);
 
-        lSpanish = view.findViewById(R.id.spanish);
-        lEnglish = view.findViewById(R.id.english);
-        lDanish = view.findViewById(R.id.danish);
+        lSpanish = (ImageView) view.findViewById(R.id.spanish);
+        lEnglish = (ImageView) view.findViewById(R.id.english);
+        lDanish = (ImageView) view.findViewById(R.id.danish);
 
 
         AuthRepository authRepository = AuthRepository.getAuthRepository();
@@ -100,6 +101,7 @@ public class UserProfileFragment extends Fragment {
 
         //Change language to Spanish
         lSpanish.setOnClickListener(l -> {
+            Log.d("languages", "Spanish");
             Locale localization = new Locale("es", "ES");
             Locale.setDefault(localization);
             Configuration config = new Configuration();
