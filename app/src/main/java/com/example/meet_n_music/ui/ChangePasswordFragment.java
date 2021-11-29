@@ -3,6 +3,8 @@ package com.example.meet_n_music.ui;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.meet_n_music.R;
+import com.example.meet_n_music.model.User;
+import com.example.meet_n_music.repository.AuthRepository;
 
 public class ChangePasswordFragment extends Fragment {
 
@@ -44,21 +48,36 @@ public class ChangePasswordFragment extends Fragment {
         newPassword = view.findViewById(R.id.newPassword);
         confirmPassword = view.findViewById(R.id.confirmPassword);
 
+        AuthRepository authRepository = AuthRepository.getAuthRepository();
+        MutableLiveData<User> userMutableLiveData= authRepository.getCurrentUser();
+        User user = userMutableLiveData.getValue();
+
+        if (user == null) {
+            throw new NullPointerException();
+        }
+
         Button submitButton = view.findViewById(R.id.submitPassword);
         submitButton.setOnClickListener(l -> {
-            //TODO
-            if (currentPassword.equals("***User password***")) {
-                if (newPassword.equals(confirmPassword)) {
-                    //TODO
-                    //Change password
-                } else {
-                    Toast.makeText(getContext(), "Both passwords doesn't match", Toast.LENGTH_SHORT).show();
-                }
+            if (newPassword.toString().equals(confirmPassword.toString())) {
+                authRepository.updatePassword(currentPassword.toString(), newPassword.toString()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        if (aBoolean != null) {
+                            if (aBoolean) {
+                                Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                            }
+                            if (!aBoolean) {
+                                Toast.makeText(getContext(), "Something was wrong while updating the password", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            throw new NullPointerException();
+                        }
+                    }
+                });
             } else {
-                Toast.makeText(getContext(), "The password doesn't match with your current password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Both passwords doesn't match", Toast.LENGTH_SHORT).show();
             }
         });
-
 
         return view;
     }

@@ -1,6 +1,7 @@
 package com.example.meet_n_music.ui;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,25 +21,22 @@ import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.User;
 import com.example.meet_n_music.repository.AuthRepository;
 
+import java.util.Locale;
+
 public class UserProfileFragment extends Fragment {
 
     View view;
 
     TextView username;
 
-    ImageView profilePhoto;
-    TextView changePhoto;
-
     TextView profileEmail;
-    TextView changeEmail;
+    Button changeEmail;
 
-    TextView changePassword;
+    Button changePassword;
 
     ImageView lSpanish;
     ImageView lEnglish;
     ImageView lDanish;
-
-    int SELECT_IMAGE_CODE = 1;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -62,9 +61,6 @@ public class UserProfileFragment extends Fragment {
 
         username = view.findViewById(R.id.username);
 
-        profilePhoto = view.findViewById(R.id.profile_photo);
-        changePhoto = view.findViewById(R.id.change_photo);
-
         profileEmail = view.findViewById(R.id.profile_email);
         changeEmail = view.findViewById(R.id.change_email);
 
@@ -76,7 +72,7 @@ public class UserProfileFragment extends Fragment {
 
 
         AuthRepository authRepository = AuthRepository.getAuthRepository();
-        MutableLiveData<User> userMutableLiveData= authRepository.getCurrentUser();
+        MutableLiveData<User> userMutableLiveData = authRepository.getCurrentUser();
         User user = userMutableLiveData.getValue();
 
         if (user == null) {
@@ -84,29 +80,12 @@ public class UserProfileFragment extends Fragment {
         }
 
         //Show username
-        //TODO
-        username.setText(user.username);
-
-        //Show user profile photo
-        //TODO
-        /*
-        Glide.with(this)
-                .load(user.getPhotoUrl())
-                .override(90, 90)
-                .into(profilePhoto);*/
-
-        //Change user profile photo
-        changePhoto.setOnClickListener(l -> {
-            //TODO
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Profile photo"), SELECT_IMAGE_CODE);
-        });
+        String userToShow = "Username: " + user.username;
+        username.setText(userToShow);
 
         //Show email
-        //TODO
-        profileEmail.setText(user.email);
+        String emailToShow = "Email: " + user.email;
+        profileEmail.setText(emailToShow);
 
         //Change user email
         changeEmail.setOnClickListener(l -> {
@@ -120,29 +99,34 @@ public class UserProfileFragment extends Fragment {
 
         //Change language to Spanish
         lSpanish.setOnClickListener(l -> {
-            //TODO
+            Locale localization = new Locale("es", "ES");
+            Locale.setDefault(localization);
+            Configuration config = new Configuration();
+            config.locale = localization;
+            getActivity().getBaseContext().getResources().updateConfiguration(config,
+                    getActivity().getBaseContext().getResources().getDisplayMetrics());
         });
 
         //Change language to English
         lEnglish.setOnClickListener(l -> {
-            //TODO
+            Locale localization = new Locale("en", "US");
+            Locale.setDefault(localization);
+            Configuration config = new Configuration();
+            config.locale = localization;
+            getActivity().getBaseContext().getResources().updateConfiguration(config,
+                    getActivity().getBaseContext().getResources().getDisplayMetrics());
         });
 
         //Change language to Danish
         lDanish.setOnClickListener(l -> {
-            //TODO
+            Locale localization = new Locale("da", "DK");
+            Locale.setDefault(localization);
+            Configuration config = new Configuration();
+            config.locale = localization;
+            getActivity().getBaseContext().getResources().updateConfiguration(config,
+                    getActivity().getBaseContext().getResources().getDisplayMetrics());
         });
 
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1) {
-            Uri uri = data.getData();
-            profilePhoto.setImageURI(uri);
-        }
     }
 }
