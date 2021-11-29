@@ -1,15 +1,22 @@
 package com.example.meet_n_music.repository;
 
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.EventGeographicalLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class GeoLocationRepository {
 
@@ -37,7 +44,32 @@ public class GeoLocationRepository {
                 }
             }
         });
+    }
 
+    public MutableLiveData<ArrayList<Pair<String, EventGeographicalLocation>>> getAllEventGeoLocations(){
+        MutableLiveData<ArrayList<Pair<String, EventGeographicalLocation>>> geoLocMutableLiveData = new MutableLiveData<>();
+        //Gets id of event and geolocation
+        FirebaseDatabase.getInstance().getReference("EventGeographicalLocation").get()
+                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        ArrayList<Pair<String, EventGeographicalLocation>> geoLocations = new ArrayList<>();
+                        for(DataSnapshot child: dataSnapshot.getChildren()){
+                            EventGeographicalLocation geoLoc = child.getValue(EventGeographicalLocation.class);
+                            geoLocations.add(new Pair<>(child.getKey(), geoLoc));
+                        }
+
+                        geoLocMutableLiveData.setValue(geoLocations);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+        return geoLocMutableLiveData;
     }
 
 }
