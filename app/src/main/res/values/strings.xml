@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Meet-n-Music</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="change_photo">Change photo</string>
     <string name="change_email" translatable="false">Change email</string>
     <string name="change_password" translatable="false">Change password</string>
     <string name="languages" translatable="false">Languages</string>
@@ -19,8 +17,6 @@
     <string name="new_email_" translatable="false">New email:</string>
     <string name="your_current_email" translatable="false">Your current email</string>
     <string name="current_email" translatable="false">Current email:</string>
-    <string name="nav_drawe_open">OPEN!</string>
-    <string name="nav_drawe_close">CLOSE!</string>
     <string-array name="Genres">
         <item>Latin</item>
         <item>Hip-hop</item>
