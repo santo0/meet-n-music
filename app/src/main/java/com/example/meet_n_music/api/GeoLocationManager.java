@@ -39,13 +39,16 @@ public class GeoLocationManager {
                 public void onResponse(Call<List<OpenStreetMapResponse>> call, Response<List<OpenStreetMapResponse>> response) {
                     Log.d(TAG, "onResponse");
                     if (response.body() != null) {
-                        EventGeographicalLocation eventGeographicalLocation = response.body().get(0).getLocationByName();
-                        Log.d(TAG, eventGeographicalLocation.getName());
-                        Log.d(TAG, Double.toString(eventGeographicalLocation.getLat()));
-                        Log.d(TAG, Double.toString(eventGeographicalLocation.getLng()));
-                        geographicalLocationLiveData.setValue(eventGeographicalLocation);
-                        Log.d(TAG, "geoLocate: found a location: " + eventGeographicalLocation.getName());
-
+                        if(  0 < response.body().size() ) {
+                            EventGeographicalLocation eventGeographicalLocation = response.body().get(0).getLocationByName();
+                            Log.d(TAG, eventGeographicalLocation.getName());
+                            Log.d(TAG, Double.toString(eventGeographicalLocation.getLat()));
+                            Log.d(TAG, Double.toString(eventGeographicalLocation.getLng()));
+                            geographicalLocationLiveData.setValue(eventGeographicalLocation);
+                            Log.d(TAG, "geoLocate: found a location: " + eventGeographicalLocation.getName());
+                        }else{
+                            geographicalLocationLiveData.setValue(null);
+                        }
                     }
                 }
 
