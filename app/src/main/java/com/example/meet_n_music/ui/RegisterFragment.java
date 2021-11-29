@@ -12,9 +12,11 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ public class RegisterFragment extends Fragment {
     private ProgressBar progressBar2;
     private Button registerUser;
     private FirebaseAuth mAuth;
+    private Spinner genreUser;
 
     @Override
     public void onResume() {
@@ -65,6 +68,10 @@ public class RegisterFragment extends Fragment {
         psswrd2 = (EditText) view.findViewById(R.id.password2);
         rPsswrd2 = (EditText) view.findViewById(R.id.repeatPassword2);
         progressBar2 = (ProgressBar) view.findViewById(R.id.progressBar2);
+        genreUser = (Spinner) view.findViewById(R.id.genreUser);
+        ArrayAdapter<String> genreAdaptor = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Genres));
+        genreAdaptor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genreUser.setAdapter(genreAdaptor);
         registerUser = (Button) view.findViewById(R.id.registerUser);
         registerUser.setOnClickListener(v -> {
             registerUserFunction();
@@ -78,6 +85,7 @@ public class RegisterFragment extends Fragment {
         String userString = username2.getText().toString().trim();
         String psswrdString = psswrd2.getText().toString().trim();
         String rPsswrdString = rPsswrd2.getText().toString().trim();
+        String genreUserString = genreUser.getSelectedItem().toString().trim();
 
         if (userString.isEmpty()) {
             username2.setError("Username is required!");
@@ -118,7 +126,7 @@ public class RegisterFragment extends Fragment {
         progressBar2.setVisibility(View.VISIBLE);
 
         AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
-        authViewModel.signUp(userString, "Rock", emailString, psswrdString).observe(getViewLifecycleOwner(), new Observer<User>() {
+        authViewModel.signUp(userString, genreUserString, emailString, psswrdString).observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 if (user != null) {

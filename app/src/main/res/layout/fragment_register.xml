@@ -15,6 +15,7 @@
         android:textAlignment="center"
         android:textSize="50sp"
         android:textStyle="bold"
+        android:textColor="@color/primary_variant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +24,7 @@
         android:id="@+id/username2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="Username"
         android:inputType="text"
@@ -36,7 +37,7 @@
         android:id="@+id/email2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
@@ -49,7 +50,7 @@
         android:id="@+id/password2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -62,7 +63,7 @@
         android:id="@+id/repeatPassword2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="Repeat Password"
         android:inputType="textPassword"
@@ -71,19 +72,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password2" />
 
+    <Spinner
+        android:id="@+id/genreUser"
+        android:layout_width="280dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repeatPassword2" />
+
     <Button
         android:id="@+id/registerUser"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
-        android:layout_marginTop="40dp"
-        android:backgroundTint="@color/purple_200"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/primary"
         android:text="REGISTER USER"
         android:textColor="#ffff"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repeatPassword2" />
+        app:layout_constraintTop_toBottomOf="@+id/genreUser" />
 
     <ProgressBar
         android:id="@+id/progressBar2"
@@ -91,11 +102,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        tools:ignore="MissingConstraints"/>
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

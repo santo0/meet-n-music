@@ -111,7 +111,7 @@ public class StartPageFragment extends Fragment {
                 if(user != null) {
                     Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
-                    ((TextView)getActivity().findViewById(R.id.header_username)).setText(user.username); // Put username on drawer header
+                    ((TextView)getActivity().findViewById(R.id.header_username)).setText("Logged as : " + user.username);
                     Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
 
                 } else {
