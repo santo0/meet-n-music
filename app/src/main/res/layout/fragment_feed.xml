@@ -9,17 +9,6 @@
     android:background="#689C27B0">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/tvUname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ERROR!!!!!!!!!"
-        android:layout_margin="20dp"/>
-    <Button
-        android:id="@+id/syncBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sync"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"

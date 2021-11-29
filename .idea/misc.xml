@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../Android/Sdk/platforms/android-31/data/res/layout/simple_list_item_1.xml" value="0.3292572463768116" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University College/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/fragment_change_email.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University College/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/fragment_change_email2.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University College/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/fragment_change_password.xml" value="0.36666666666666664" />
@@ -15,15 +16,23 @@
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/login_layout.xml" value="0.1" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/test.xml" value="0.3625" />
         <entry key="..\:/Users/joelf/Desktop/Enginyeria Informatica/VIA University/First semester/Android Development/App Project/meet-n-music/app/src/main/res/layout/user_profile.xml" value="0.33" />
+        <entry key="app/src/main/res/drawable/ic_baseline_map_24.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.23796296296296296" />
+        <entry key="app/src/main/res/drawable/round_corner_recycler_view.xml" value="0.37447916666666664" />
+        <entry key="app/src/main/res/drawable/white_border.xml" value="0.37447916666666664" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/drawer_header.xml" value="0.3079710144927536" />
+        <entry key="app/src/main/res/layout/event_item.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_creating_event.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/fragment_edit_event.xml" value="0.35833333333333334" />
         <entry key="app/src/main/res/layout/fragment_event.xml" value="0.17426545086119555" />
         <entry key="app/src/main/res/layout/fragment_feed.xml" value="0.17426545086119555" />
-        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.20104166666666667" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_start_page.xml" value="0.17426545086119555" />
         <entry key="app/src/main/res/layout/fragment_user_created_events.xml" value="0.3079710144927536" />
         <entry key="app/src/main/res/layout/fragment_user_to_assist_events.xml" value="0.3079710144927536" />
         <entry key="app/src/main/res/layout/fragment_user_to_attend_events.xml" value="0.3079710144927536" />
+        <entry key="app/src/main/res/layout/fragment_view_event.xml" value="0.35555555555555557" />
         <entry key="app/src/main/res/menu/drawer_menu.xml" value="0.35833333333333334" />
       </map>
     </option>

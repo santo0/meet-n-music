@@ -2,65 +2,118 @@ package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.meet_n_music.EventItemAction;
+import com.example.meet_n_music.EventListAdapter;
 import com.example.meet_n_music.R;
+import com.example.meet_n_music.model.Event;
+import com.example.meet_n_music.model.User;
+import com.example.meet_n_music.repository.EventRepository;
+import com.example.meet_n_music.viewmodel.AttendEventsViewModel;
+import com.example.meet_n_music.viewmodel.AuthViewModel;
+import com.example.meet_n_music.viewmodel.FeedViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserToAttendEventsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class UserToAttendEventsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "UserToAttendEventsFragment";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView recyclerView;
+    private EventListAdapter adapter;
+    private AuthViewModel authViewModel;
 
     public UserToAttendEventsFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserToAssistEventsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UserToAttendEventsFragment newInstance(String param1, String param2) {
-        UserToAttendEventsFragment fragment = new UserToAttendEventsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).unlockDrawerMenu();
+ //       ((MainActivity)getActivity()).lockDrawerMenu();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_to_attend_events, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_user_to_attend_events, container, false);
+
+        Log.d("feedFragment", "1");
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+//        feedViewModel.init();
+
+        User user = authViewModel.getCurrentUser().getValue();
+
+        Log.d("feedFragment", "2");
+        //showedEvents.setValue(feedViewModel.getEventsWithGenre(user.interestedIn));
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+
+        adapter = new EventListAdapter(getContext(), new EventItemAction() {
+            @Override
+            public NavDirections navigate(String id) {
+                UserToAttendEventsFragmentDirections.ActionUserToAttendEventsFragmentToViewEventFragment action = UserToAttendEventsFragmentDirections.actionUserToAttendEventsFragmentToViewEventFragment();
+                action.setEventId(id);
+                return action;
+            }
+        });
+        Log.d("feedFragment", "3");
+
+
+        FirebaseDatabase.getInstance().getReference("Users").child(user.id).child("attendingEventsIds").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                ArrayList<String> eventIds = new ArrayList<>();
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    eventIds.add(ds.getValue(String.class));
+                }
+
+                ArrayList<Event> attendingEvents = new ArrayList<>();
+                for(Event event : EventRepository.getInstance().getAllEvents().getValue()){
+                    if(eventIds.contains(event.getId())){
+                        attendingEvents.add(event);
+                    }
+                }
+
+                adapter.setEvents(attendingEvents);
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+
+            }
+        });
+
+        return rootView;
     }
+
 }

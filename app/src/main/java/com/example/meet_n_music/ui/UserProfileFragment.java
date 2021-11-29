@@ -52,6 +52,7 @@ public class UserProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+        ((MainActivity)getActivity()).lockDrawerMenu();
     }
 
     @Override
