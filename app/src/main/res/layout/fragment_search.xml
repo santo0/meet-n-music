@@ -7,13 +7,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/primary">
         <Spinner
             android:id="@+id/genreSearch"
             android:layout_width="315dp"
             android:layout_height="53dp"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="25dp"/>
+            android:layout_marginLeft="25dp"
+            android:background="@color/white"/>
         <Button
             android:id="@+id/searchButtonGenre"
             android:layout_width="315dp"
@@ -21,7 +23,7 @@
             android:text="SEARCH"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:backgroundTint="@color/purple_200"
+            android:backgroundTint="@color/secondary_variant"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"/>
         <androidx.recyclerview.widget.RecyclerView
@@ -29,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="20dp"
-            android:background="@color/purple_200"/>
+            android:background="@color/primary"/>
     </LinearLayout>
 
 </FrameLayout>

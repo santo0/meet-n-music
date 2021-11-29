@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.example.meet_n_music.EventItemAction;
 import com.example.meet_n_music.EventListAdapter;
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
@@ -51,12 +53,6 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -78,7 +74,14 @@ public class SearchFragment extends Fragment {
     }
 
     public void listEventGenre(){
-        adapterEventGenreList = new EventListAdapter();
+        adapterEventGenreList = new EventListAdapter(getContext(), new EventItemAction() {
+            @Override
+            public NavDirections navigate(String id) {
+                SearchFragmentDirections.ActionSearchFragmentToViewEventFragment action = SearchFragmentDirections.actionSearchFragmentToViewEventFragment();
+                action.setEventId(id);
+                return action;
+            }
+        });
         String userSearchingFor = genreSearcher.getSelectedItem().toString().trim();
         MutableLiveData<ArrayList<Event>> eventsToShow = feedViewModel.getEventMutableLiveData();
         eventsToShow.observe(getViewLifecycleOwner(), new Observer<ArrayList<Event>>() {

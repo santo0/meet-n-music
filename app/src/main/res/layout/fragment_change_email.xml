@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="44dp"
-        android:backgroundTint="@color/purple_200"
+        android:backgroundTint="@color/primary"
         android:fontFamily="sans-serif-black"
         android:text="@string/submit"
         android:textColor="@color/white"
