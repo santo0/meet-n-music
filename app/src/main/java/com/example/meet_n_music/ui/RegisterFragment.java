@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,8 @@ public class RegisterFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+    private static final String TAG = "RegisterFragment";
     private TextView banner2;
     private EditText username2, email2, psswrd2, rPsswrd2;
     private ProgressBar progressBar2;
@@ -47,6 +50,7 @@ public class RegisterFragment extends Fragment {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.GONE);
+        ((MainActivity)getActivity()).lockDrawerMenu();
     }
 
     @Override

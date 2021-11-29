@@ -50,23 +50,11 @@
             android:id="@+id/action_feedFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
         <action
-            android:id="@+id/action_feedFragment_to_eventListFragment"
-            app:destination="@id/eventListFragment" />
-        <action
             android:id="@+id/action_feedFragment_to_creatingEventFragment"
             app:destination="@id/creatingEventFragment" />
         <action
             android:id="@+id/action_feedFragment_to_viewEventFragment"
             app:destination="@id/viewEventFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/eventListFragment"
-        android:name="com.example.meet_n_music.ui.EventListFragment"
-        android:label="fragment_event_list"
-        tools:layout="@layout/fragment_event_list" >
-        <action
-            android:id="@+id/action_eventListFragment_to_feedFragment"
-            app:destination="@id/feedFragment" />
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
@@ -98,7 +86,7 @@
         android:id="@+id/viewEventFragment"
         android:name="com.example.meet_n_music.ui.ViewEventFragment"
         android:label="fragment_view_event"
-        tools:layout="@layout/fragment_view_event" >
+        tools:layout="@layout/fragment_view_event">
         <action
             android:id="@+id/action_viewEventFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
@@ -106,16 +94,40 @@
             android:name="eventId"
             app:argType="string"
             android:defaultValue="Error" />
+        <action
+            android:id="@+id/action_viewEventFragment_to_editEventFragment"
+            app:destination="@id/editEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/userCreatedEventsFragment"
         android:name="com.example.meet_n_music.ui.UserCreatedEventsFragment"
         android:label="fragment_user_created_events"
-        tools:layout="@layout/fragment_user_created_events" />
+        tools:layout="@layout/fragment_user_created_events" >
+        <action
+            android:id="@+id/action_userCreatedEventsFragment_to_viewEventFragment"
+            app:destination="@id/viewEventFragment" />
+    </fragment>
     <fragment
         android:id="@+id/userToAttendEventsFragment"
         android:name="com.example.meet_n_music.ui.UserToAttendEventsFragment"
         android:label="fragment_user_to_attend_events"
-        tools:layout="@layout/fragment_user_to_attend_events" />
+        tools:layout="@layout/fragment_user_to_attend_events" >
+        <action
+            android:id="@+id/action_userToAttendEventsFragment_to_viewEventFragment"
+            app:destination="@id/viewEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editEventFragment"
+        android:name="com.example.meet_n_music.ui.EditEventFragment"
+        android:label="fragment_edit_event"
+        tools:layout="@layout/fragment_edit_event">
+        <action
+            android:id="@+id/action_editEventFragment_to_viewEventFragment"
+            app:destination="@id/viewEventFragment" />
+        <argument
+            android:name="eventId"
+            android:defaultValue="Error"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

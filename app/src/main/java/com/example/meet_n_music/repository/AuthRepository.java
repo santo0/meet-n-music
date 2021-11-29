@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.meet_n_music.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,6 +14,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuthRepository {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -28,6 +32,11 @@ public class AuthRepository {
 
     public MutableLiveData<User> getCurrentUser() {
         return currentUser;
+    }
+
+    public void firebaseSignOut(){
+        firebaseAuth.signOut();
+        currentUser = new MutableLiveData<>();
     }
 
     public void firebaseSignIn(String email, String password) {
@@ -77,5 +86,34 @@ public class AuthRepository {
         });
 
         return userMutableLiveData;
+    }
+
+
+    public MutableLiveData<List<String>> getCurrentUserAttendingEvents(){
+        User user = currentUser.getValue();
+        MutableLiveData<List<String>> attendingEventsLiveData = new MutableLiveData<>();
+        if(currentUser != null){
+            FirebaseDatabase.getInstance().getReference("Users").child(user.id).child("attendingEventsIds").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(task.isSuccessful()){
+                        DataSnapshot dataSnapshot = task.getResult();
+                        ArrayList<String> eventIds = new ArrayList<>();
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            eventIds.add(ds.getValue(String.class));
+                        }
+                        attendingEventsLiveData.setValue(eventIds);
+                    }else{
+                        attendingEventsLiveData.setValue(null);
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    attendingEventsLiveData.setValue(null);
+                }
+            });
+        }
+        return attendingEventsLiveData;
     }
 }

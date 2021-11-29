@@ -1,28 +1,24 @@
 package com.example.meet_n_music.ui;
 
-import androidx.annotation.NonNull;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
+
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
-
 import com.example.meet_n_music.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.smarteist.autoimageslider.IndicatorView.draw.drawer.Drawer;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DrawerController {
     BottomNavigationView bottomNav;
     NavController navController;
     NavHostFragment navHostFragment;
@@ -37,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         //top bar
         mToolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);//Delete title
+        // getSupportActionBar().setDisplayShowTitleEnabled(false);//Delete title
 
         //nav controller
         navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navHostFragment);
@@ -66,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -78,4 +72,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void lockDrawerMenu() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mToolbar.setNavigationIcon(null);
+    }
+
+    @Override
+    public void unlockDrawerMenu() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mToolbar.setNavigationIcon(R.drawable.ic_baseline_menu_24);
+    }
 }
