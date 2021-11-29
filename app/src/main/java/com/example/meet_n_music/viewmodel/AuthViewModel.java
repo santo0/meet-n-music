@@ -17,12 +17,16 @@ public class AuthViewModel extends ViewModel {
         return authRepository.getCurrentUser();
     }
 
-    public void signIn(String email, String password){
+    public void signIn(String email, String password) {
         authRepository.firebaseSignIn(email, password);
     }
 
     public MutableLiveData<User> signUp(String username, String interestedIn, String email, String password) {
-        return authRepository.firebaseSignUp(username,interestedIn, email, password);
+        return authRepository.firebaseSignUp(username, interestedIn, email, password);
+    }
+
+    public void signOut() {
+        authRepository.firebaseSignOut();
     }
 
 

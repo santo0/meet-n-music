@@ -14,17 +14,12 @@ import java.util.ArrayList;
 public class FeedViewModel extends ViewModel {
 
     EventRepository eventRepository = EventRepository.getInstance();
-    MutableLiveData<ArrayList<Event>> eventMutableLiveData;
+   // MutableLiveData<ArrayList<Event>> eventMutableLiveData;
 
     public MutableLiveData<ArrayList<Event>> getEventMutableLiveData() {
-        return eventMutableLiveData;
+        return EventRepository.getInstance().getAllEvents();
     }
 
-    public void init() {
-        if (eventMutableLiveData == null){
-            eventMutableLiveData = eventRepository.getAllEvents();
-        }
-    }
 
     //public MutableLiveData<ArrayList<Event>> getEvents() {
     //    return eventRepository.getAllEvents();
@@ -34,7 +29,7 @@ public class FeedViewModel extends ViewModel {
         Log.d("ASK!", genre);
         MutableLiveData<ArrayList<Event>> eventGenreLiveData = new MutableLiveData<>();
         ArrayList<Event> events = new ArrayList<>();
-        for (Event event : eventMutableLiveData.getValue()) {
+        for (Event event : EventRepository.getInstance().getAllEvents().getValue()) {
             Log.d("ASK", event.getGenre());
             Log.d("ASK", event.getName());
             if (event.getGenre().equals(genre)) {
