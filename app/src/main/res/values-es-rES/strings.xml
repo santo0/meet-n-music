@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Meet-n-Music</string>
+    <string name="change_email">Cambiar email</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="languages">Idiomas</string>
+    <string name="log_out">Cerrar sesión</string>
+    <string name="submit">Enviar</string>
+    <string name="at_least_6_characters">Al menos 6 carácteres</string>
+    <string name="confirm_password">Confirmar contraseña:</string>
+    <string name="new_password">Nueva contraseña:</string>
+    <string name="your_current_password">Tu contraseña actual</string>
+    <string name="current_password">Contraseña actual:</string>
+    <string name="repeat_the_email">Repite el email</string>
+    <string name="confirm_email">Confirma el email:</string>
+    <string name="new_email">Nuevo email</string>
+    <string name="new_email_">Nuevo email:</string>
+    <string name="your_current_email">Tu email actual</string>
+    <string name="current_email">Email actual</string>
+</resources>

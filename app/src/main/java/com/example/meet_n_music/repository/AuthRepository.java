@@ -7,7 +7,9 @@ import com.example.meet_n_music.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,11 +34,6 @@ public class AuthRepository {
 
     public MutableLiveData<User> getCurrentUser() {
         return currentUser;
-    }
-
-    public void firebaseSignOut(){
-        firebaseAuth.signOut();
-        currentUser = new MutableLiveData<>();
     }
 
     public void firebaseSignIn(String email, String password) {
@@ -65,7 +62,6 @@ public class AuthRepository {
         });
     }
 
-
     public MutableLiveData<User> firebaseSignUp(String username, String interestedIn, String email, String password) {
         MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -84,10 +80,8 @@ public class AuthRepository {
                 }
             }
         });
-
         return userMutableLiveData;
     }
-
 
     public MutableLiveData<List<String>> getCurrentUserAttendingEvents(){
         User user = currentUser.getValue();
@@ -115,5 +109,67 @@ public class AuthRepository {
             });
         }
         return attendingEventsLiveData;
+    }
+
+    public MutableLiveData<Boolean> updateEmail(String currentPassword, String newEmail) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        MutableLiveData<Boolean> completed = new MutableLiveData<>();
+
+        if (user == null || user.getEmail() == null) {
+            throw new NullPointerException();
+        }
+
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPassword);
+
+        user.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            user.updateEmail(newEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        completed.setValue(true);
+                                    } else {
+                                        completed.setValue(false);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+        return completed;
+    }
+
+    public MutableLiveData<Boolean> updatePassword(String currentPassword, String newPassword) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        MutableLiveData<Boolean> completed = new MutableLiveData<>();
+
+        if (user == null || user.getEmail() == null) {
+            throw new NullPointerException();
+        }
+
+        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPassword);
+
+        user.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        completed.setValue(true);
+                                    } else {
+                                        completed.setValue(false);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+        return completed;
     }
 }
