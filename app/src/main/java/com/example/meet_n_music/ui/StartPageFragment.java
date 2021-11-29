@@ -40,13 +40,14 @@ public class StartPageFragment extends Fragment {
     private ProgressBar progressBar1;
     private FirebaseAuth mAuth;
     private Button loginUser;
-
+    AuthViewModel authViewModel;
     @Override
     public void onResume() {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.GONE);
         ((MainActivity)getActivity()).lockDrawerMenu();
+        authViewModel.signOut();
     }
 
     @Override
@@ -54,6 +55,7 @@ public class StartPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_start_page, container, false);
+        authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         email1 = (EditText) view.findViewById(R.id.email);
         psswrd1 = (EditText) view.findViewById(R.id.password);
@@ -100,7 +102,6 @@ public class StartPageFragment extends Fragment {
 
         progressBar1.setVisibility(View.VISIBLE);
 
-        AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         authViewModel.signIn(emailString,passwordString);
 

@@ -40,12 +40,10 @@ import com.example.meet_n_music.api.OpenStreetMapApi;
 import com.example.meet_n_music.api.OpenStreetMapResponse;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.EventGeographicalLocation;
+import com.example.meet_n_music.model.User;
+import com.example.meet_n_music.repository.AuthRepository;
 import com.example.meet_n_music.viewmodel.CreateEventViewModel;
 import com.google.maps.GeoApiContext;
-import com.google.maps.GeocodingApi;
-import com.google.maps.errors.ApiException;
-import com.google.maps.model.GeocodingResult;
-import com.google.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -161,9 +159,6 @@ public class CreatingEventFragment extends Fragment {
 
         OpenStreetMapApi osmApi = GeoLocationServiceGenerator.getOsmApi();
 
-
-        GeoApiContext geoApiContext = new GeoApiContext.Builder().apiKey(BuildConfig.MAPS_API_KEY).build();
-
         String searchString = locationInput.getText().toString();
         if (!searchString.isEmpty()) {
             Log.d(TAG, "Sending api request");
@@ -180,8 +175,8 @@ public class CreatingEventFragment extends Fragment {
                         Log.d(TAG, Double.toString(eventGeographicalLocation.getLng()));
                         geographicalLocationLiveData = new MutableLiveData<>(eventGeographicalLocation);
                         Log.d(TAG, "geoLocate: found a location: " + eventGeographicalLocation.getName());
-                        Toast.makeText(getActivity(), eventGeographicalLocation.getName(), Toast.LENGTH_SHORT).show();
-                        ((TextView) view.findViewById(R.id.textLocation)).setText(eventGeographicalLocation.getName());
+                      //  Toast.makeText(getActivity(), eventGeographicalLocation.getName(), Toast.LENGTH_SHORT).show();
+                      //  ((TextView) view.findViewById(R.id.textLocation)).setText(eventGeographicalLocation.getName());
                     }
                 }
 
@@ -192,7 +187,7 @@ public class CreatingEventFragment extends Fragment {
                     Log.d(TAG, t.getLocalizedMessage());
                     Log.d(TAG, "geoLocate: did not found a location");
                     Toast.makeText(getActivity(), "Did not found a location", Toast.LENGTH_SHORT).show();
-                   // ((TextView) view.findViewById(R.id.textLocation)).setText("Location not found");
+                    ((TextView) view.findViewById(R.id.textLocation)).setText("Location not found");
                 }
             });
         }
@@ -337,14 +332,24 @@ public class CreatingEventFragment extends Fragment {
 
         Log.d("CreatingEventFragment", "1");
         progressBar3.setVisibility(View.VISIBLE);
-        Event event = new Event(eventNameString, eventDescriptionString, locationString, startEventDateString, eventGenre, eventCovidRestrictionString);
+        MutableLiveData<User> userMutableLiveData = AuthRepository.getAuthRepository().getCurrentUser();
+        //Event(String id, String name, String description, String location, String startDate, String genre, String covid, String ownerId, int totalAttendants)
+        Event event = new Event("null",
+                eventNameString,
+                eventDescriptionString,
+                locationString,
+                startEventDateString,
+                eventGenre,
+                eventCovidRestrictionString,
+                userMutableLiveData.getValue().id,
+                0);
         MutableLiveData<Event> eventMutableLiveData = new MutableLiveData<>();
         MutableLiveData<Uri> uriMutableLiveData = new MutableLiveData<>();
         eventMutableLiveData.setValue(event);
         uriMutableLiveData.setValue(filePath);
         Log.d("CreatingEventFragment", "2");
+        createEventViewModel.setEvent(eventMutableLiveData, userMutableLiveData);
 
-        createEventViewModel.setEvent(eventMutableLiveData);
 
         Log.d("CreatingEventFragment", "3");
         eventMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Event>() {

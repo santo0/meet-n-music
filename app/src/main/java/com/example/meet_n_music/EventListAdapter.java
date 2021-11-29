@@ -1,6 +1,8 @@
 package com.example.meet_n_music;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,25 +10,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.ui.FeedFragmentDirections;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.ViewHolder> {
 
+    private static final String TAG = "EventListAdapter";
     private ArrayList<Event> events;
-    private Context context;
+    private final Context context;
+    private EventItemAction action;
 
-    public EventListAdapter(Context context) {
+    public EventListAdapter(Context context, EventItemAction action) {
 //        this.events = events;
         this.context = context;
+        this.action = action;
     }
 
     public void setEvents(ArrayList<Event> events) {
@@ -48,18 +56,50 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
         holder.date.setText(event.getStartDate());
         holder.location.setText(event.getLocation());
 
-        if (holder.imageView != null) {
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/" + event.getImagePath());
-            Glide.with(context)
-                    .load(storageReference)
-                    .centerCrop()
-                    .into((ImageView) holder.imageView);
-        }
+        Log.d(TAG, "images/" + event.getImagePath());
+        //Problemes
+        FirebaseStorage.getInstance().getReference("images/" + event.getImagePath()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                if (uri != null) {
+                    Glide.with(context)
+                            .load(uri)
+                            .centerCrop()
+                            .into(holder.imageView);
+                }else{
+                    Glide.with(context)
+                            .load(R.drawable._10804_live_music_comeback_mb_1314)
+                            .centerCrop()
+                            .into(holder.imageView);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Glide.with(context)
+                        .load(R.drawable._10804_live_music_comeback_mb_1314)
+                        .centerCrop()
+                        .into(holder.imageView);
+
+            }
+        }).addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                Glide.with(context)
+                        .load(R.drawable._10804_live_music_comeback_mb_1314)
+                        .centerCrop()
+                        .into(holder.imageView);
+
+            }
+        });
+
+
         holder.itemView.setOnClickListener(view -> {
 
-            FeedFragmentDirections.ActionFeedFragmentToViewEventFragment action = FeedFragmentDirections.actionFeedFragmentToViewEventFragment();
-            action.setEventId(event.getId());
-            Navigation.findNavController(view).navigate(action);
+//            FeedFragmentDirections.ActionFeedFragmentToViewEventFragment action = FeedFragmentDirections.actionFeedFragmentToViewEventFragment();
+//            action.setEventId(event.getId());
+            Navigation.findNavController(view).navigate(this.action.navigate(event.getId()));
+
         });
     }
 
@@ -71,7 +111,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, date, location;
         ImageView imageView;
-
 
 
         public ViewHolder(@NonNull View itemView) {

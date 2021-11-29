@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.meet_n_music.EventItemAction;
 import com.example.meet_n_music.EventListAdapter;
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
@@ -62,7 +64,7 @@ public class FeedFragment extends Fragment {
         Log.d("feedFragment", "1");
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         feedViewModel = new ViewModelProvider(this).get(FeedViewModel.class);
-        feedViewModel.init();
+        //feedViewModel.init();
 
         User user = authViewModel.getCurrentUser().getValue();
 
@@ -74,7 +76,14 @@ public class FeedFragment extends Fragment {
 
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
-        adapter = new EventListAdapter(getContext());
+        adapter = new EventListAdapter(getContext(), new EventItemAction() {
+            @Override
+            public NavDirections navigate(String id) {
+                FeedFragmentDirections.ActionFeedFragmentToViewEventFragment action = FeedFragmentDirections.actionFeedFragmentToViewEventFragment();
+                action.setEventId(id);
+                return action;
+            }
+        });
         Log.d("feedFragment", "3");
         MutableLiveData<ArrayList<Event>> eventsToShow = feedViewModel.getEventMutableLiveData();
         eventsToShow.observe(getViewLifecycleOwner(), new Observer<ArrayList<Event>>() {
@@ -82,12 +91,14 @@ public class FeedFragment extends Fragment {
             public void onChanged(ArrayList<Event> events) {
                 Log.d("ASK!", user.interestedIn);
                 ArrayList<Event> eventsGenre = new ArrayList<>();
-                for (Event event : events) {
-                    Log.d("ASK", event.getGenre());
-                    Log.d("ASK", event.getName());
-                    if (event.getGenre().equals(user.interestedIn)) {
-                        Log.d("YES", event.getName());
-                        eventsGenre.add(event);
+                if(events != null){
+                    for (Event event : events) {
+                        Log.d("ASK", event.getGenre());
+                        Log.d("ASK", event.getName());
+                        if (event.getGenre().equals(user.interestedIn)) {
+                            Log.d("YES", event.getName());
+                            eventsGenre.add(event);
+                        }
                     }
                 }
 
