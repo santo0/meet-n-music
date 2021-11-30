@@ -38,6 +38,8 @@ public class UserProfileFragment extends Fragment {
     ImageView lEnglish;
     ImageView lDanish;
 
+    Button logout;
+
     public UserProfileFragment() {
         // Required empty public constructor
     }
@@ -70,6 +72,7 @@ public class UserProfileFragment extends Fragment {
         lEnglish = view.findViewById(R.id.english);
         lDanish = view.findViewById(R.id.danish);
 
+        logout = view.findViewById(R.id.logout);
 
         AuthRepository authRepository = AuthRepository.getAuthRepository();
         MutableLiveData<User> userMutableLiveData = authRepository.getCurrentUser();
@@ -125,6 +128,10 @@ public class UserProfileFragment extends Fragment {
             config.locale = localization;
             getActivity().getBaseContext().getResources().updateConfiguration(config,
                     getActivity().getBaseContext().getResources().getDisplayMetrics());
+        });
+
+        logout.setOnClickListener(l -> {
+            Navigation.findNavController(getView()).navigate((R.id.action_userProfileFragment_to_startPageFragment));
         });
 
         return view;

@@ -33,13 +33,17 @@
         <action
             android:id="@+id/action_userProfileFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
-
         <action
             android:id="@+id/action_userProfileFragment_to_changePasswordFragment"
             app:destination="@id/changePasswordFragment" />
         <action
             android:id="@+id/action_userProfileFragment_to_changeEmailFragment"
             app:destination="@id/changeEmailFragment" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_startPageFragment"
+            app:popUpTo="@id/startPageFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/startPageFragment" />
     </fragment>
     <fragment
         android:id="@+id/feedFragment"
