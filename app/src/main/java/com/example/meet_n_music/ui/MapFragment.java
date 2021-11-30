@@ -150,7 +150,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                     HashMap<Marker, String> idHashMapMarkers = new HashMap<>();
+                    Log.d(TAG, "starting to get pairs");
                     for (Pair<String, EventGeographicalLocation> geoLocPair : eventGeographicalLocations) {
+                        Log.d(TAG, "we have pair with id " + geoLocPair.first);
                         String eventId = geoLocPair.first;
                         EventGeographicalLocation geoLoc = geoLocPair.second;
                         Log.d(TAG, eventId);
@@ -159,10 +161,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             @Override
                             public void onChanged(Event event) {
                                 if(event != null){
+                                    Log.d(TAG, "Created market of event with id " + eventId);
                                     MarkerOptions markerOptions = new MarkerOptions();
                                     markerOptions.position(new LatLng(geoLoc.getLat(), geoLoc.getLng()));
                                     markerOptions.title(event.getName());
                                     idHashMapMarkers.put(mMap.addMarker(markerOptions), eventId);
+                                } else {
+                                  Log.e(TAG, "can't find event with id " + eventId);
                                 }
                             }
                         });
