@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/userCreatedEventsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_archive_24"
+        android:title="Created events"/>
+
+    <item
+        android:id="@id/userToAttendEventsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_event_24"
+        android:title="Events to assist"/>
+
+    <item
+        android:id="@id/userProfileFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_build_24"
+        android:title="Profile"/>
+</menu>

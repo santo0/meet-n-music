@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Meet-n-Music</string>
+    <string name="change_email" translatable="false">Skift email</string>
+    <string name="change_password" translatable="false">Skift kodeord</string>
+    <string name="languages" translatable="false">Sprog</string>
+    <string name="log_out" translatable="false">Log ud</string>
+    <string name="submit" translatable="false">Indsend</string>
+    <string name="at_least_6_characters" translatable="false">Mindst 6 tegn</string>
+    <string name="confirm_password" translatable="false">Bekræft kodeord:</string>
+    <string name="new_password" translatable="false">Nyt kodeord:</string>
+    <string name="your_current_password" translatable="false">Din nuværende adgangskode</string>
+    <string name="current_password" translatable="false">Nuværende kodeord:</string>
+    <string name="repeat_the_email" translatable="false">Gentag emailen</string>
+    <string name="confirm_email" translatable="false">Bekræft email:</string>
+    <string name="new_email" translatable="false">Ny email</string>
+    <string name="new_email_" translatable="false">Ny email:</string>
+    <string name="your_current_email" translatable="false">Din nuværende email</string>
+    <string name="current_email" translatable="false">Nuværende email:</string>
+    <string name="nav_drawe_open" translatable="false">" ÅBEN!"</string>
+    <string name="nav_drawe_close" translatable="false">" TÆT!"</string>
+</resources>

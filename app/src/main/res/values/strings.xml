@@ -1,3 +1,39 @@
 <resources>
     <string name="app_name">Meet-n-Music</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="change_email" translatable="false">Change email</string>
+    <string name="change_password" translatable="false">Change password</string>
+    <string name="languages" translatable="false">Languages</string>
+    <string name="log_out" translatable="false">Log out</string>
+    <string name="submit" translatable="false">Submit</string>
+    <string name="at_least_6_characters" translatable="false">At least 6 characters</string>
+    <string name="confirm_password" translatable="false">Confirm password:</string>
+    <string name="new_password" translatable="false">New password:</string>
+    <string name="your_current_password" translatable="false">Your current password</string>
+    <string name="current_password" translatable="false">Current password:</string>
+    <string name="repeat_the_email" translatable="false">Repeat the email</string>
+    <string name="confirm_email" translatable="false">Confirm email:</string>
+    <string name="new_email" translatable="false">New email</string>
+    <string name="new_email_" translatable="false">New email:</string>
+    <string name="your_current_email" translatable="false">Your current email</string>
+    <string name="current_email" translatable="false">Current email:</string>
+    <string name="nav_drawe_open" translatable="false">OPEN!</string>
+    <string name="nav_drawe_close">CLOSE!</string>
+    <string-array name="Genres">
+        <item>Latin</item>
+        <item>Hip-hop</item>
+        <item>Jazz</item>
+        <item>Rock</item>
+        <item>Pop</item>
+        <item>EDM</item>
+        <item>Reggae</item>
+        <item>Flamenco</item>
+    </string-array>
+
+    <string-array name="CovidRestrictions">
+        <item>Vaccine</item>
+        <item>Security distance</item>
+        <item>PCR</item>
+        <item>Face mask</item>
+    </string-array>
 </resources>
