@@ -36,6 +36,11 @@ public class AuthRepository {
         return currentUser;
     }
 
+    public void firebaseSignOut(){
+        firebaseAuth.signOut();
+        currentUser = new MutableLiveData<>();
+    }
+
     public void firebaseSignIn(String email, String password) {
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(authTask -> {
             if (authTask.isSuccessful()) {
@@ -172,4 +177,5 @@ public class AuthRepository {
                 });
         return completed;
     }
+
 }

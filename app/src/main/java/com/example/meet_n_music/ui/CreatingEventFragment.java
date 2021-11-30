@@ -67,7 +67,7 @@ public class CreatingEventFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
         ((MainActivity) getActivity()).lockDrawerMenu();
@@ -175,8 +175,8 @@ public class CreatingEventFragment extends Fragment {
                         Log.d(TAG, Double.toString(eventGeographicalLocation.getLng()));
                         geographicalLocationLiveData = new MutableLiveData<>(eventGeographicalLocation);
                         Log.d(TAG, "geoLocate: found a location: " + eventGeographicalLocation.getName());
-                      //  Toast.makeText(getActivity(), eventGeographicalLocation.getName(), Toast.LENGTH_SHORT).show();
-                      //  ((TextView) view.findViewById(R.id.textLocation)).setText(eventGeographicalLocation.getName());
+                        Toast.makeText(getActivity(), eventGeographicalLocation.getName(), Toast.LENGTH_SHORT).show();
+                        ((TextView) view.findViewById(R.id.textLocation)).setText(eventGeographicalLocation.getName());
                     }
                 }
 

@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.meet_n_music.R;
+import com.example.meet_n_music.api.WeatherManager;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.EventGeographicalLocation;
 import com.example.meet_n_music.model.User;
@@ -65,7 +66,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
         ((MainActivity)getActivity()).lockDrawerMenu();
@@ -153,7 +154,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                         });
                     });
                 } else {
-                    view.findViewById(R.id.btnAttend).setBackgroundTintList(getContext().getResources().getColorStateList(R.color.green));
+                    view.findViewById(R.id.btnAttend).setBackgroundTintList(getContext().getResources().getColorStateList(R.color.secondary_variant));
                     ((Button) view.findViewById(R.id.btnAttend)).setText("Join event");
                     view.findViewById(R.id.btnAttend).setOnClickListener(v -> {
                         view.findViewById(R.id.btnAttend).setOnClickListener(null);
@@ -241,13 +242,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
-                /*;
-                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/" + event.getImagePath());
-                Glide.with(getContext())
-                        .load(storageReference)
-                        .placeholder(R.drawable.danish)
-                        .into((ImageView) view.findViewById(R.id.imagePlaceholder));
-                */
+
                 eventLiveData.setValue(event);
 
                 MutableLiveData<List<String>> eventIds = AuthRepository.getAuthRepository().getCurrentUserAttendingEvents();
@@ -281,6 +276,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 EventGeographicalLocation geoloc = snapshot.getValue(EventGeographicalLocation.class);
 
+                WeatherManager.getWeatherByCoords(geoloc.getLat(), geoloc.getLng());
                 LatLng location = new LatLng(geoloc.getLat(), geoloc.getLng());
                 moveCamera(location, DEFAULT_ZOOM);
                 mMap.addMarker(new MarkerOptions()

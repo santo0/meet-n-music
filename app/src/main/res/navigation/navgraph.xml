@@ -40,6 +40,11 @@
         <action
             android:id="@+id/action_userProfileFragment_to_changeEmailFragment"
             app:destination="@id/changeEmailFragment" />
+        <action
+            android:id="@+id/action_userProfileFragment_to_startPageFragment"
+            app:destination="@id/startPageFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/startPageFragment"/>
     </fragment>
     <fragment
         android:id="@+id/feedFragment"

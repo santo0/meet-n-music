@@ -43,6 +43,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
         ((MainActivity)getActivity()).lockDrawerMenu();
     }
 
