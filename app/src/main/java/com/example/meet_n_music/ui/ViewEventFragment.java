@@ -328,6 +328,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
