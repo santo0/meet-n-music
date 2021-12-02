@@ -8,8 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -107,5 +109,18 @@ public class ImageRepository {
         });
 
         return uriMutableLiveData;
+    }
+
+    public MutableLiveData<Boolean> deleteImage(String imgPath) {
+        MutableLiveData<Boolean> delImage = new MutableLiveData<>();
+        Log.d(TAG, "Deleting event image with path images/" + imgPath);
+        FirebaseStorage.getInstance().getReference("images/"+imgPath).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG, "delImage to true");
+                delImage.setValue(true);
+            }
+        });
+        return delImage;
     }
 }
