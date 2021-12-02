@@ -1,5 +1,6 @@
 package com.example.meet_n_music.ui;
 
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -304,6 +307,52 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
             //User is owner
             btnAttend.setVisibility(View.GONE);
             view.findViewById(R.id.editLayout).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.deleteEventButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new MaterialAlertDialogBuilder(getContext(), R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
+                            .setMessage("Do you want to delete the event?")
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Toast.makeText(getContext(), "NOPE!", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(getContext(), "Deleting the event!", Toast.LENGTH_SHORT).show();
+                            viewEventViewModel.deleteEvent(event.getId()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                @Override
+                                public void onChanged(Boolean delEvent) {
+                                    viewEventViewModel.deleteEventAttendees(event.getId()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                        @Override
+                                        public void onChanged(Boolean delAttendees) {
+                                            viewEventViewModel.deleteEventOwnership(event.getId(), user.id).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                                @Override
+                                                public void onChanged(Boolean delOwnership) {
+                                                    viewEventViewModel.deleteEventGeoLocation(event.getId()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                                        @Override
+                                                        public void onChanged(Boolean delGeoLocation) {
+                                                            viewEventViewModel.deleteEventImage(event.getImagePath()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                                                @Override
+                                                                public void onChanged(Boolean delImage) {
+                                                                    Toast.makeText(getContext(), "Event deleted!", Toast.LENGTH_SHORT).show();
+                                                                    getFragmentManager().popBackStackImmediate();
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }).show();
+                }
+            });
             view.findViewById(R.id.editEventButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

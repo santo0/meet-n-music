@@ -3,6 +3,7 @@ package com.example.meet_n_music.repository;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.meet_n_music.model.Event;
@@ -160,4 +161,20 @@ public class EventRepository {
         return eventsLiveData;
     }
 
+    public MutableLiveData<Boolean> deleteEvent(String eventId) {
+        MutableLiveData<Boolean> delEvent = new MutableLiveData<>();
+        Log.d(TAG, "Deleting event " + eventId);
+        FirebaseDatabase.getInstance().getReference("Events").child(eventId).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if(error != null){
+                    Log.d(TAG, error.getMessage());
+                    Log.d(TAG, error.getDetails());
+                }
+                Log.d(TAG, "delEvent to true");
+                delEvent.setValue(true);
+            }
+        });
+        return delEvent;
+    }
 }

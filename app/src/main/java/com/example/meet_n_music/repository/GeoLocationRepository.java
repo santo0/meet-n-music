@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.meet_n_music.model.Event;
@@ -13,6 +14,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -76,4 +78,20 @@ public class GeoLocationRepository {
         return geoLocMutableLiveData;
     }
 
+    public MutableLiveData<Boolean> deleteGeoLocation(String eventId) {
+        MutableLiveData<Boolean> delGeoLoc = new MutableLiveData<>();
+        Log.d(TAG, "Deleting GeoLocation of event " + eventId);
+        FirebaseDatabase.getInstance().getReference("EventGeographicalLocation").child(eventId).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if(error != null){
+                    Log.d(TAG, error.getMessage());
+                    Log.d(TAG, error.getDetails());
+                }
+                Log.d(TAG, "delGeoLoc to true");
+                delGeoLoc.setValue(true);
+            }
+        });
+        return delGeoLoc;
+    }
 }
