@@ -238,6 +238,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                             //     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/" + eventIdLD.getValue() + "/" + eventIdLD.getValue() + ".jpg");
                             Glide.with(getContext())
                                     .load(uri)
+                                    .centerCrop()
                                     .into((ImageView) view.findViewById(R.id.imagePlaceholder));
                         }
                     }
