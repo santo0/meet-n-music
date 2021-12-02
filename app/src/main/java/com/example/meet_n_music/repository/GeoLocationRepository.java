@@ -31,19 +31,23 @@ public class GeoLocationRepository {
     }
 
 
-    public void setGeoLocation(String geoId, MutableLiveData<EventGeographicalLocation> eventGeographicalLocationMutableLiveData) {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("EventGeographicalLocation");
-        dbRef.child(geoId).setValue(eventGeographicalLocationMutableLiveData.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public MutableLiveData<Boolean> setGeoLocation(String geoId, MutableLiveData<EventGeographicalLocation> eventGeographicalLocationMutableLiveData) {
+        MutableLiveData<Boolean> setGeoLocationState = new MutableLiveData<>();
+        FirebaseDatabase.getInstance().getReference("EventGeographicalLocation").child(geoId).setValue(eventGeographicalLocationMutableLiveData.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    eventGeographicalLocationMutableLiveData.setValue(eventGeographicalLocationMutableLiveData.getValue());//notify UI completed
+                    Log.d(TAG, "success on setting location " + geoId);
+                    setGeoLocationState.setValue(true);
+//                    eventGeographicalLocationMutableLiveData.setValue(eventGeographicalLocationMutableLiveData.getValue());//notify UI completed
                 } else {
-                    Log.d(TAG, "NULL!!!");
-                    eventGeographicalLocationMutableLiveData.setValue(null);//notify UI not completed
+                    Log.d(TAG, "failed on setting location " + geoId);
+                    setGeoLocationState.setValue(false);
+  //                  eventGeographicalLocationMutableLiveData.setValue(null);//notify UI not completed
                 }
             }
         });
+        return setGeoLocationState;
     }
 
     public MutableLiveData<ArrayList<Pair<String, EventGeographicalLocation>>> getAllEventGeoLocations(){

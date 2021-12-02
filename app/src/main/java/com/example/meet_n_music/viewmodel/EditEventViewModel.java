@@ -16,18 +16,18 @@ import com.example.meet_n_music.repository.ImageRepository;
 public class EditEventViewModel extends ViewModel {
 
 
-    public void modifyEventDetails(MutableLiveData<Event> event) {
-        EventRepository.getInstance().modifyEvent(event);
+    public MutableLiveData<Boolean> modifyEventDetails(MutableLiveData<Event> event) {
+        return EventRepository.getInstance().modifyEvent(event);
     }
 
 
-    public void modifyEventPicture(String imagePath, MutableLiveData<Uri> uriMutableLiveData) {
-        ImageRepository.getInstance().changeImage(imagePath, uriMutableLiveData);
+    public MutableLiveData<Boolean> modifyEventPicture(String imagePath, MutableLiveData<Uri> uriMutableLiveData) {
+        return ImageRepository.getInstance().changeImage(imagePath, uriMutableLiveData);
 
     }
 
-    public void modifyEventGeoLocation(String geoLocationId, MutableLiveData<EventGeographicalLocation> eventGeographicalLocationMutableLiveData) {
-        GeoLocationRepository.getInstance().setGeoLocation(geoLocationId, eventGeographicalLocationMutableLiveData);
+    public MutableLiveData<Boolean> modifyEventGeoLocation(String geoLocationId, MutableLiveData<EventGeographicalLocation> eventGeographicalLocationMutableLiveData) {
+        return GeoLocationRepository.getInstance().setGeoLocation(geoLocationId, eventGeographicalLocationMutableLiveData);
     }
 
     public MutableLiveData<Event> getEventById(String eventId){

@@ -10,11 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -33,25 +31,17 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.example.meet_n_music.BuildConfig;
 import com.example.meet_n_music.R;
-import com.example.meet_n_music.api.GeoLocationServiceGenerator;
-import com.example.meet_n_music.api.OpenStreetMapApi;
-import com.example.meet_n_music.api.OpenStreetMapResponse;
+import com.example.meet_n_music.api.GeoLocationManager;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.EventGeographicalLocation;
 import com.example.meet_n_music.model.User;
 import com.example.meet_n_music.repository.AuthRepository;
 import com.example.meet_n_music.viewmodel.CreateEventViewModel;
-import com.google.maps.GeoApiContext;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class CreatingEventFragment extends Fragment {
@@ -82,46 +72,52 @@ public class CreatingEventFragment extends Fragment {
     private Spinner genreSelector;
     private ListView covidRestrictions;
     private EditText eventName, eventDescription, locationInput;
-    private View createEvent;
+    private View createEvent, picUploadButton;
     private Button startDate, searchLocation;
     private DatePickerDialog startDateEventDialog;
     private ProgressBar progressBar3;
-    private Uri filePath;
-    ImageView imagePlaceholder;
-    CreateEventViewModel createEventViewModel;
-    MutableLiveData<EventGeographicalLocation> geographicalLocationLiveData;
+    private ImageView imagePlaceholder;
+    private TextView tvTextLocation;
+    private CreateEventViewModel createEventViewModel;
+    private MutableLiveData<EventGeographicalLocation> geographicalLocationLiveData;
+    private MutableLiveData<Uri> filePathLiveData;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_creating_event, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_creating_event, container, false);
 
         createEventViewModel = new ViewModelProvider(this).get(CreateEventViewModel.class);
 
-        eventName = (EditText) view.findViewById(R.id.eventName);
-        eventDescription = (EditText) view.findViewById(R.id.EventDescription);
-        locationInput = (EditText) view.findViewById(R.id.locationInputSearch);
-        progressBar3 = (ProgressBar) view.findViewById(R.id.progressBar3);
+        eventName = rootView.findViewById(R.id.eventName);
+        eventDescription = rootView.findViewById(R.id.EventDescription);
+        locationInput = rootView.findViewById(R.id.locationInputSearch);
+        progressBar3 = rootView.findViewById(R.id.progressBar3);
+        startDate = rootView.findViewById(R.id.eventStartDate);
+        genreSelector = rootView.findViewById(R.id.genreSelection);
+        covidRestrictions = rootView.findViewById(R.id.CovidRestrictions);
+        picUploadButton = rootView.findViewById(R.id.uploadPhotoIcon);
+        imagePlaceholder = rootView.findViewById(R.id.uploadPhotoImage);
+        tvTextLocation = rootView.findViewById(R.id.textLocation);
+        searchLocation = rootView.findViewById(R.id.btnSearchLocation);
+        createEvent = rootView.findViewById(R.id.createEvent);
+
 
         initDatePicker();
-        startDate = (Button) view.findViewById(R.id.eventStartDate);
-        startDate.setOnClickListener(v -> openStartDate(v));
+        startDate.setOnClickListener(v -> startDateEventDialog.show());
         startDate.setText(getTodaysDate());
 
-        genreSelector = (Spinner) view.findViewById(R.id.genreSelection);
         ArrayAdapter<String> genreAdaptor = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Genres));
         genreAdaptor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genreSelector.setAdapter(genreAdaptor);
 
-        covidRestrictions = (ListView) view.findViewById(R.id.CovidRestrictions);
         ArrayAdapter<String> covidAdaptor = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.CovidRestrictions));
         covidRestrictions.setAdapter(covidAdaptor);
 
         //Images
-        View picUploadButton = view.findViewById(R.id.uploadPhotoIcon);
-        imagePlaceholder = view.findViewById(R.id.uploadPhotoImage);
+
         picUploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,82 +125,50 @@ public class CreatingEventFragment extends Fragment {
             }
         });
 
-        locationInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
-                    geoLocate(view);
-                }
-                return false;
+        searchLocation.setOnClickListener(new View.OnClickListener() {
+                                              @Override
+                                              public void onClick(View view) {
+                                                  String searchString = locationInput.getText().toString().trim();
+                                                  geographicalLocationLiveData = GeoLocationManager.geoLocate(searchString);
+                                                  geographicalLocationLiveData.observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
+                                                      @Override
+                                                      public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
+                                                          if (eventGeographicalLocation != null) {
+                                                              //Toast.makeText(getActivity(), eventGeographicalLocation.getName(), Toast.LENGTH_SHORT).show();
+                                                              tvTextLocation.setText(eventGeographicalLocation.getName());
+                                                          } else {
+                                                              locationInput.setError("Cannot find given location.");
+                                                              locationInput.requestFocus();
+                                                          }
+                                                      }
+                                                  });
 
-            }
-        });
-        searchLocation = view.findViewById(R.id.btnSearchLocation);
-        searchLocation.setOnClickListener(v -> geoLocate(view));
+                                              }
+                                          }
+        );
 
-        createEvent = (View) view.findViewById(R.id.createEvent);
         createEvent.setOnClickListener(v -> {
             newEvent();
         });
 
 
-        return view;
-    }
-
-    private void geoLocate(View view) {
-        Log.d(TAG, "geoLocate: geolocating");
-
-        OpenStreetMapApi osmApi = GeoLocationServiceGenerator.getOsmApi();
-
-        String searchString = locationInput.getText().toString();
-        if (!searchString.isEmpty()) {
-            Log.d(TAG, "Sending api request");
-            Call<List<OpenStreetMapResponse>> callApi = osmApi.getLocationByName(searchString, "json", 1);
-            Log.d(TAG, callApi.request().toString());
-            callApi.enqueue(new Callback<List<OpenStreetMapResponse>>() {
-                @Override
-                public void onResponse(Call<List<OpenStreetMapResponse>> call, Response<List<OpenStreetMapResponse>> response) {
-                    Log.d(TAG, "onResponse");
-                    if (response.body() != null) {
-                        EventGeographicalLocation eventGeographicalLocation = response.body().get(0).getLocationByName();
-                        Log.d(TAG, eventGeographicalLocation.getName());
-                        Log.d(TAG, Double.toString(eventGeographicalLocation.getLat()));
-                        Log.d(TAG, Double.toString(eventGeographicalLocation.getLng()));
-                        geographicalLocationLiveData = new MutableLiveData<>(eventGeographicalLocation);
-                        Log.d(TAG, "geoLocate: found a location: " + eventGeographicalLocation.getName());
-                        Toast.makeText(getActivity(), eventGeographicalLocation.getName(), Toast.LENGTH_SHORT).show();
-                        ((TextView) view.findViewById(R.id.textLocation)).setText(eventGeographicalLocation.getName());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<OpenStreetMapResponse>> call, Throwable t) {
-                    Log.d(TAG, t.toString());
-                    Log.d(TAG, t.getMessage());
-                    Log.d(TAG, t.getLocalizedMessage());
-                    Log.d(TAG, "geoLocate: did not found a location");
-                    Toast.makeText(getActivity(), "Did not found a location", Toast.LENGTH_SHORT).show();
-                    ((TextView) view.findViewById(R.id.textLocation)).setText("Location not found");
-                }
-            });
-        }
-
+        return rootView;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            filePath = data.getData();
+//            filePath = data.getData();
+            filePathLiveData = new MutableLiveData<>(data.getData());
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePathLiveData.getValue());
                 imagePlaceholder.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
+                filePathLiveData.setValue(null);
+                Toast.makeText(getActivity(), "Can't load image! Try again.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -218,21 +182,24 @@ public class CreatingEventFragment extends Fragment {
 
 
     private String getTodaysDate() {
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        month = month + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        return makeDateString(day, month, year);
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(calendar.getTime());
     }
 
     private void initDatePicker() {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                String date = makeDateString(day, month, year);
-                startDate.setText(date);
+                String dateBuffer = "";
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day);
+                Log.d(TAG, calendar.toString());
+                Log.d(TAG, calendar.getTime().toString());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                dateBuffer = dateFormat.format(calendar.getTime());
+                Log.d(TAG, dateBuffer);
+                startDate.setText(dateBuffer);
             }
         };
         Calendar cal = Calendar.getInstance();
@@ -245,53 +212,8 @@ public class CreatingEventFragment extends Fragment {
         startDateEventDialog = new DatePickerDialog(getActivity(), style, dateSetListener, year, month, day);
     }
 
-    private void openStartDate(View view) {
+    private void openStartDate() {
         startDateEventDialog.show();
-    }
-
-    private String makeDateString(int day, int month, int year) {
-        return year + "-" + getMonthFormat(month) + "-" + day;
-    }
-
-    private String getMonthFormat(int month) {
-        if (month == 1) {
-            return "01";
-        }
-        if (month == 2) {
-            return "02";
-        }
-        if (month == 3) {
-            return "03";
-        }
-        if (month == 4) {
-            return "04";
-        }
-        if (month == 5) {
-            return "05";
-        }
-        if (month == 6) {
-            return "06";
-        }
-        if (month == 7) {
-            return "07";
-        }
-        if (month == 8) {
-            return "08";
-        }
-        if (month == 9) {
-            return "09";
-        }
-        if (month == 10) {
-            return "10";
-        }
-        if (month == 11) {
-            return "11";
-        }
-        if (month == 12) {
-            return "12";
-        }
-        // Default should never happen.
-        return "01";
     }
 
     private void newEvent() {
@@ -314,11 +236,17 @@ public class CreatingEventFragment extends Fragment {
             return;
         }
 
-        if (geographicalLocationLiveData == null) {
+        if (geographicalLocationLiveData == null || geographicalLocationLiveData.getValue() == null) {
             locationInput.setError("Location is required!");
             locationInput.requestFocus();
             return;
         }
+
+        if (filePathLiveData == null || filePathLiveData.getValue() == null) {
+            Toast.makeText(getActivity(), "Can't load image! Try again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String locationString = geographicalLocationLiveData.getValue().getName();
 
 
@@ -344,60 +272,47 @@ public class CreatingEventFragment extends Fragment {
                 userMutableLiveData.getValue().id,
                 0);
         MutableLiveData<Event> eventMutableLiveData = new MutableLiveData<>();
-        MutableLiveData<Uri> uriMutableLiveData = new MutableLiveData<>();
         eventMutableLiveData.setValue(event);
-        uriMutableLiveData.setValue(filePath);
-        Log.d("CreatingEventFragment", "2");
-        createEventViewModel.setEvent(eventMutableLiveData, userMutableLiveData);
 
-
-        Log.d("CreatingEventFragment", "3");
-        eventMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Event>() {
+        createEventViewModel.setEvent(eventMutableLiveData, userMutableLiveData).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(Event event) {
-                if (event != null) {
+            public void onChanged(Boolean setEventFinished) {
+                if (setEventFinished != null && setEventFinished) {
 //                    Log.d("CreatingEventFragment", event.getId());
-                    Log.d("CreatingEventFragment", event.getName());
+                    Log.d(TAG, event.getName());
                     String imagePath = event.getId() + "/" + event.getId() + ".jpg";
-                    createEventViewModel.setEventImage(imagePath, uriMutableLiveData);
-//                    ImageRepository.getInstance().uploadImage(imagePath, uriMutableLiveData);
-                    uriMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Uri>() {
+                    createEventViewModel.setEventImage(imagePath, filePathLiveData).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                         @Override
-                        public void onChanged(Uri uri) {
-                            if (uri != null) {
-                                createEventViewModel.setGeoLocation(event.getId(), geographicalLocationLiveData);
-                                geographicalLocationLiveData.observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
+                        public void onChanged(Boolean setImageFinished) {
+                            if (setImageFinished != null && setImageFinished) {
+                                createEventViewModel.setGeoLocation(event.getId(), geographicalLocationLiveData).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                                     @Override
-                                    public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
-                                        if (eventGeographicalLocation != null) {
-                                            Log.d(TAG, event.getName());
+                                    public void onChanged(Boolean setGeoLocFinished) {
+                                        if (setGeoLocFinished != null && setGeoLocFinished) {
+                                            Log.d(TAG, "Event with id " + event.getId() + " has been registered successfully.");
                                             Toast.makeText(getActivity(), "Event has been registered successfully!", Toast.LENGTH_LONG).show();
                                             progressBar3.setVisibility(View.GONE);
-
                                             Navigation.findNavController(getView()).navigate(R.id.action_creatingEventFragment_to_feedFragment);
                                         } else {
-                                            Log.d(TAG, "it is null");
+                                            Log.d(TAG, "setting geolocation has failed!");
                                             Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                                             progressBar3.setVisibility(View.GONE);
                                         }
                                     }
                                 });
                             } else {
-                                Log.d(TAG, "it is null");
+                                Log.d(TAG, "setting image has failed!");
                                 Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                                 progressBar3.setVisibility(View.GONE);
                             }
                         }
                     });
-
                 } else {
-                    Log.d(TAG, "it is null");
+                    Log.d(TAG, "setting event has returned null!");
                     Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar3.setVisibility(View.GONE);
                 }
             }
         });
-        Log.d("CreatingEventFragment", "4");
     }
-
 }
