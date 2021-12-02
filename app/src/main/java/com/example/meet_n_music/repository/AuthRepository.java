@@ -177,5 +177,4 @@ public class AuthRepository {
                 });
         return completed;
     }
-
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -211,7 +212,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
 
         eventDescription.setMovementMethod(new ScrollingMovementMethod());
 
-
         Query query = FirebaseDatabase.getInstance().getReference().child("Events").child(eventIdLiveData.getValue());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -292,8 +292,20 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        ArrayAdapter<String> covidAdaptor = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.CovidRestrictions));
+        covidRestrictions.setAdapter(covidAdaptor);
 
-//        ArrayList<String> covidArray = getCovidRestrictions(eventCovid);
+        eventCovid = eventLiveData.getValue().getCovid();
+        ArrayList<String> covidArray = getCovidRestrictions(eventCovid);
+
+       for (int i = 0; i < covidRestrictions.getCount(); i++) {
+           for (String measure: covidArray) {
+               if (measure.equals(covidRestrictions.getItemAtPosition(i))) {
+                   covidRestrictions.setItemChecked(i, true);
+               }
+           }
+       }
+
         return view;
     }
 
@@ -323,7 +335,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
 
 
     public ArrayList<String> getCovidRestrictions(String eventCovid) {
-        return new ArrayList<String>(Arrays.asList(eventCovid.split(", ")));
+        return new ArrayList<>(Arrays.asList(eventCovid.split(", ")));
     }
 
     @Override
