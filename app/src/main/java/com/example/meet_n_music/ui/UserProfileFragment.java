@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +33,13 @@ public class UserProfileFragment extends Fragment {
     TextView profileEmail;
     Button changeEmail;
 
+    Button logoutBtn;
+
     Button changePassword;
 
     ImageView lSpanish;
     ImageView lEnglish;
     ImageView lDanish;
-
-    Button logout;
 
     public UserProfileFragment() {
         // Required empty public constructor
@@ -53,7 +54,8 @@ public class UserProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
-        ((MainActivity)getActivity()).lockDrawerMenu();
+        getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
+        ((MainActivity)getActivity()).unlockDrawerMenu();
     }
 
     @Override
@@ -68,11 +70,10 @@ public class UserProfileFragment extends Fragment {
 
         changePassword = view.findViewById(R.id.change_password);
 
-        lSpanish = view.findViewById(R.id.spanish);
-        lEnglish = view.findViewById(R.id.english);
-        lDanish = view.findViewById(R.id.danish);
+        lSpanish = (ImageView) view.findViewById(R.id.spanish);
+        lEnglish = (ImageView) view.findViewById(R.id.english);
+        lDanish = (ImageView) view.findViewById(R.id.danish);
 
-        logout = view.findViewById(R.id.logout);
 
         AuthRepository authRepository = AuthRepository.getAuthRepository();
         MutableLiveData<User> userMutableLiveData = authRepository.getCurrentUser();
@@ -102,6 +103,7 @@ public class UserProfileFragment extends Fragment {
 
         //Change language to Spanish
         lSpanish.setOnClickListener(l -> {
+            Log.d("languages", "Spanish");
             Locale localization = new Locale("es", "ES");
             Locale.setDefault(localization);
             Configuration config = new Configuration();
@@ -130,8 +132,13 @@ public class UserProfileFragment extends Fragment {
                     getActivity().getBaseContext().getResources().getDisplayMetrics());
         });
 
-        logout.setOnClickListener(l -> {
-            Navigation.findNavController(getView()).navigate((R.id.action_userProfileFragment_to_startPageFragment));
+        logoutBtn = view.findViewById(R.id.logout);
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AuthRepository.getAuthRepository().firebaseSignOut();
+                Navigation.findNavController(view).navigate(R.id.action_userProfileFragment_to_startPageFragment);
+            }
         });
 
         return view;

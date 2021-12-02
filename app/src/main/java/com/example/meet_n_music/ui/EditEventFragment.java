@@ -42,8 +42,6 @@ import com.example.meet_n_music.repository.AuthRepository;
 import com.example.meet_n_music.repository.ImageRepository;
 import com.example.meet_n_music.viewmodel.CreateEventViewModel;
 import com.example.meet_n_music.viewmodel.EditEventViewModel;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -67,19 +65,17 @@ public class EditEventFragment extends Fragment {
     private DatePickerDialog startDateEventDialog;
     private ProgressBar progressBar3;
     private Uri filePath;
-    List<String> availableGenres;
-    List<String> availableRestrictions;
-    ImageView imagePlaceholder;
-//    MutableLiveData<Boolean> isPhotoChangedLD, isEventChangedLD, isLocationChangedLD;
-//    MutableLiveData<Boolean> photoChangeFinished, eventChangeFinished, locationChangedFinished;
-//    MutableLiveData<Integer> finishEditSemaphore;
+    private List<String> availableGenres;
+    private List<String> availableRestrictions;
+    private ImageView imagePlaceholder;
 
-    LiveData<String> eventIdLD;
-    CreateEventViewModel createEventViewModel;
-    MutableLiveData<EventGeographicalLocation> geographicalLocationLiveData;
-    MutableLiveData<Uri> uriMutableLiveData;
-    MutableLiveData<Event> oldEventLiveData;
-    EditEventViewModel editEventViewModel;
+    private MutableLiveData<Boolean> hasChangedPicture;
+    private LiveData<String> eventIdLD;
+    private CreateEventViewModel createEventViewModel;
+    private MutableLiveData<EventGeographicalLocation> geographicalLocationLiveData;
+    private MutableLiveData<Uri> uriMutableLiveData;
+    private MutableLiveData<Event> oldEventLiveData;
+    private EditEventViewModel editEventViewModel;
 
 
     public void loadEvent() {
@@ -87,7 +83,33 @@ public class EditEventFragment extends Fragment {
         eventName.setText(event.getName());
         eventDescription.setText(event.getDescription());
         startDate.setText(event.getStartDate());
+
         tvLocation.setText(event.getLocation());
+
+        GeoLocationManager.geoLocate(event.getLocation()).observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
+            @Override
+            public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
+                if(eventGeographicalLocation != null){
+                    geographicalLocationLiveData.setValue(eventGeographicalLocation);
+                    locationInput.setText(eventGeographicalLocation.getName());
+                }
+            }
+        });
+
+        ImageRepository.getInstance().getImageUri(event.getImagePath()).observe(getViewLifecycleOwner(), new Observer<Uri>() {
+            @Override
+            public void onChanged(Uri uri) {
+                if(uri != null){
+
+                    Glide.with(getContext())
+                            .load(uri)
+                            .into(imagePlaceholder);
+                    uriMutableLiveData.setValue(uri);
+                }
+            }
+
+        });
+
         genreSelector.setSelection(availableGenres.indexOf(event.getGenre()));
 
         List<String> restrictions = getCovidRestrictions(event.getCovid());
@@ -95,6 +117,10 @@ public class EditEventFragment extends Fragment {
         for (String restriction : restrictions) {
             covidRestrictions.setItemChecked(availableRestrictions.indexOf(restriction), true);
         }
+
+
+
+
     }
 
     public ArrayList<String> getCovidRestrictions(String eventCovid) {
@@ -109,7 +135,7 @@ public class EditEventFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
         ((MainActivity) getActivity()).lockDrawerMenu();
@@ -124,7 +150,8 @@ public class EditEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_edit_event, container, false);
+        //View rootView = inflater.inflate(R.layout.fragment_edit_event, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_creating_event, container, false);
         ViewEventFragmentArgs args = ViewEventFragmentArgs.fromBundle(getArguments());
         eventIdLD = new MutableLiveData<>(args.getEventId());
         editEventViewModel = new ViewModelProvider(this).get(EditEventViewModel.class);
@@ -137,7 +164,11 @@ public class EditEventFragment extends Fragment {
 
         tvLocation = rootView.findViewById(R.id.textLocation);
         createEventViewModel = new ViewModelProvider(this).get(CreateEventViewModel.class);
+
         geographicalLocationLiveData = new MutableLiveData<>();
+        uriMutableLiveData = new MutableLiveData<>();
+        hasChangedPicture = new MutableLiveData<>(false);
+
         eventName = rootView.findViewById(R.id.eventName);
         eventDescription = rootView.findViewById(R.id.EventDescription);
         locationInput = rootView.findViewById(R.id.locationInputSearch);
@@ -163,8 +194,8 @@ public class EditEventFragment extends Fragment {
 
 
         initDatePicker();
+        startDate.setOnClickListener(v -> startDateEventDialog.show());
         startDate.setText(getTodaysDate());
-        startDate.setOnClickListener(v -> openStartDate(v));
 
         availableGenres = Arrays.asList(getResources().getStringArray(R.array.Genres));
         ArrayAdapter<String> genreAdaptor = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, availableGenres);
@@ -229,8 +260,8 @@ public class EditEventFragment extends Fragment {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
                 imagePlaceholder.setImageBitmap(bitmap);
-                uriMutableLiveData = new MutableLiveData<>(filePath);
-                //isPhotoChangedLD.setValue(true);
+                uriMutableLiveData.setValue(filePath);
+                hasChangedPicture.setValue(true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -262,9 +293,7 @@ public class EditEventFragment extends Fragment {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 dateBuffer = dateFormat.format(calendar.getTime());
                 Log.d(TAG, dateBuffer);
-//                String date = makeDateString(day, month, year);
                 startDate.setText(dateBuffer);
-                //  isEventChangedLD.setValue(true);
             }
         };
         Calendar cal = Calendar.getInstance();
@@ -275,10 +304,6 @@ public class EditEventFragment extends Fragment {
 
         int style = AlertDialog.THEME_HOLO_LIGHT;
         startDateEventDialog = new DatePickerDialog(getActivity(), style, dateSetListener, year, month, day);
-    }
-
-    private void openStartDate(View view) {
-        startDateEventDialog.show();
     }
 
     private void editEvent(View rootView) {
@@ -331,9 +356,7 @@ public class EditEventFragment extends Fragment {
                 oldEventLiveData.getValue().getTotalAttendants());
 
         MutableLiveData<Event> newEventMutableLiveData = new MutableLiveData<>(newEvent);
-        //MutableLiveData<Uri> uriMutableLiveData = new MutableLiveData<>(filePath);
-//        eventMutableLiveData.setValue(event);
-//        uriMutableLiveData.setValue(filePath);
+
         Log.d("CreatingEventFragment", "2");
 
         modifyEvent(newEventMutableLiveData).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -400,11 +423,10 @@ public class EditEventFragment extends Fragment {
 
     public MutableLiveData<Boolean> modifyEventDetails(MutableLiveData<Event> newEventMutableLiveData) {
         MutableLiveData<Boolean> eventFinished = new MutableLiveData<>();
-        editEventViewModel.modifyEventDetails(newEventMutableLiveData);
-        newEventMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Event>() {
+        editEventViewModel.modifyEventDetails(newEventMutableLiveData).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(Event event) {
-                if (event != null) {
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean != null && aBoolean) {
                     eventFinished.setValue(true);
                 } else {
                     eventFinished.setValue(false);
@@ -416,28 +438,32 @@ public class EditEventFragment extends Fragment {
 
     public MutableLiveData<Boolean> modifyEventPicture(MutableLiveData<Event> eventMutableLiveData, MutableLiveData<Uri> uriMutableLiveData) {
         MutableLiveData<Boolean> pictureFinished = new MutableLiveData<>();
-        String filePath = eventMutableLiveData.getValue().getImagePath();
-        editEventViewModel.modifyEventPicture(filePath, uriMutableLiveData);
-        uriMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Uri>() {
-            @Override
-            public void onChanged(Uri uri) {
-                if (uri != null) {
-                    pictureFinished.setValue(true);
-                } else {
-                    pictureFinished.setValue(false);
+        if(hasChangedPicture != null && hasChangedPicture.getValue() != null && hasChangedPicture.getValue()) {
+            Log.d(TAG, "picture has to be changed");
+            String filePath = eventMutableLiveData.getValue().getImagePath();
+            editEventViewModel.modifyEventPicture(filePath, uriMutableLiveData).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean aBoolean) {
+                    if (aBoolean != null && aBoolean) {
+                        pictureFinished.setValue(true);
+                    } else {
+                        pictureFinished.setValue(false);
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            Log.d(TAG, "picture has NOT to be changed");
+            pictureFinished.setValue(true);
+        }
         return pictureFinished;
     }
 
     public MutableLiveData<Boolean> modifyEventLocation(MutableLiveData<Event> eventMutableLiveData, MutableLiveData<EventGeographicalLocation> eventGeographicalLocationMutableLiveData) {
         MutableLiveData<Boolean> locationFinished = new MutableLiveData<>();
-        editEventViewModel.modifyEventGeoLocation(eventMutableLiveData.getValue().getId(), eventGeographicalLocationMutableLiveData);
-        eventGeographicalLocationMutableLiveData.observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
+        editEventViewModel.modifyEventGeoLocation(eventMutableLiveData.getValue().getId(), eventGeographicalLocationMutableLiveData).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
-                if (eventGeographicalLocation != null) {
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean != null && aBoolean) {
                     locationFinished.setValue(true);
                 } else {
                     locationFinished.setValue(false);

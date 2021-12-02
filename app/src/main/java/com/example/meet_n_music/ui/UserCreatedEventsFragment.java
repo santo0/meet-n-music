@@ -42,6 +42,7 @@ public class UserCreatedEventsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((MainActivity) getActivity()).unlockDrawerMenu();
+        getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
         //        ((MainActivity)getActivity()).lockDrawerMenu();
     }
 

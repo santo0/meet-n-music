@@ -32,7 +32,8 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity)getActivity()).lockDrawerMenu();
+        getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
+        ((MainActivity)getActivity()).unlockDrawerMenu();
     }
 
     @Override

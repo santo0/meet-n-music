@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,43 +27,66 @@ public class ImageRepository {
     }
 
     //path-> events/event_id/image_id
-    public void uploadImage(String path, MutableLiveData<Uri> image) {
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        Log.d(TAG, "images/" + path);
-        storageRef.child("images/" + path).putFile(image.getValue()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    public MutableLiveData<Boolean> uploadImage(String path, MutableLiveData<Uri> image) {
+        MutableLiveData<Boolean> uploadImageState = new MutableLiveData<>();
+        Log.d(TAG, "Uploading image with path images/" + path);
+        FirebaseStorage.getInstance().getReference().child("images/" + path).putFile(image.getValue()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.d(TAG, "Image success on uploading");
-                image.setValue(image.getValue());
+                Log.d(TAG, "Image of path images/" + path  + " success on uploading");
+                uploadImageState.setValue(true);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "Image failure on uploading");
-                image.setValue(null);
+                Log.d(TAG, "Image of path images/" + path + " failed on uploading");
+                uploadImageState.setValue(false);
             }
         });
-
+        return uploadImageState;
     }
 
-    public void changeImage(String path, MutableLiveData<Uri> image){
+    public MutableLiveData<Boolean> changeImage(String path, MutableLiveData<Uri> image){
+        MutableLiveData<Boolean> changeImageState = new MutableLiveData<>();
         StorageReference storageRef = FirebaseStorage.getInstance().getReference("images/" + path);
         Log.d(TAG, "images/" + path);
         storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Log.d(TAG, "Image success on deleting");
-                uploadImage(path, image);
+                MutableLiveData<Boolean> uploadImageState = uploadImage(path, image);
+                uploadImageState.observeForever(new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        if(aBoolean != null && aBoolean){
+                            changeImageState.setValue(true);
+                        }else {
+                            changeImageState.setValue(false);
+                        }
+                        uploadImageState.removeObserver(this);
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "Couldn't delete, trying to upload anyway.");
-                uploadImage(path, image);
+                MutableLiveData<Boolean> uploadImageState = uploadImage(path, image);
+                uploadImageState.observeForever(new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        if(aBoolean != null && aBoolean){
+                            changeImageState.setValue(true);
+                        }else {
+                            changeImageState.setValue(false);
+                        }
+                        uploadImageState.removeObserver(this);
+                    }
+                });
             }
         });
-
-
+        return changeImageState;
     }
 
     // String imagePath = event.getId() + "/" + event.getId() + ".jpg";
