@@ -74,6 +74,7 @@ public class RegisterFragment extends Fragment {
         genreUser.setAdapter(genreAdaptor);
         registerUser = (Button) view.findViewById(R.id.registerUser);
         registerUser.setOnClickListener(v -> {
+            registerUser.setEnabled(false);
             registerUserFunction();
         });
         return view;
@@ -133,9 +134,11 @@ public class RegisterFragment extends Fragment {
                     Toast.makeText(getActivity(), "User has been registered successfully!", Toast.LENGTH_LONG).show();
                     progressBar2.setVisibility(View.GONE);
                     Navigation.findNavController(getView()).navigate(R.id.action_registerFragment_to_startPageFragment);
+                    registerUser.setEnabled(true);
                 } else {
                     Toast.makeText(getActivity(), "Failed to register! Try again!", Toast.LENGTH_LONG).show();
                     progressBar2.setVisibility(View.GONE);
+                    registerUser.setEnabled(true);
                 }
             }
         });

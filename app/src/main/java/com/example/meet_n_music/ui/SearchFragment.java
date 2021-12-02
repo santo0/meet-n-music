@@ -44,7 +44,10 @@ public class SearchFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().findViewById(R.id.btn_create_event).setVisibility(View.GONE);
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+        getActivity().findViewById(R.id.appbar_top).setVisibility(View.VISIBLE);
         ((MainActivity)getActivity()).lockDrawerMenu();
+
     }
 
     @Override
@@ -69,6 +72,7 @@ public class SearchFragment extends Fragment {
         recyclerViewGenre.setLayoutManager(new LinearLayoutManager(getContext()));
         searchButtonGenre = (Button) view.findViewById(R.id.searchButtonGenre);
         searchButtonGenre.setOnClickListener(l -> {
+            searchButtonGenre.setEnabled(false);
             listEventGenre();
         });
         return view;
@@ -102,6 +106,7 @@ public class SearchFragment extends Fragment {
                 adapterEventGenreList.setEvents(eventsGenre);
                 recyclerViewGenre.setAdapter(adapterEventGenreList);
                 adapterEventGenreList.notifyDataSetChanged();
+                searchButtonGenre.setEnabled(true);
             }
         });
     }

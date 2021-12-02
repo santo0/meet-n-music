@@ -238,6 +238,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                             //     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/" + eventIdLD.getValue() + "/" + eventIdLD.getValue() + ".jpg");
                             Glide.with(getContext())
                                     .load(uri)
+                                    .centerCrop()
                                     .into((ImageView) view.findViewById(R.id.imagePlaceholder));
                         }
                     }
@@ -328,6 +329,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
