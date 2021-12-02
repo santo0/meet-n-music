@@ -66,7 +66,8 @@ public class EventRepository {
     }
 
 
-    public void modifyEvent(MutableLiveData<Event> event) {
+    public MutableLiveData<Boolean> modifyEvent(MutableLiveData<Event> event) {
+        MutableLiveData<Boolean> modifyEventState = new MutableLiveData<>();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Events");
         Log.d("EventRepository", "Before: " + event.getValue().getId());
         dbRef.child(event.getValue().getId()).setValue(event.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -74,27 +75,30 @@ public class EventRepository {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Log.d("EventRepository", "Modified event " + event.getValue().getId());
-                    event.setValue(event.getValue());//notify UI completed
+                    modifyEventState.setValue(true);
+                    //event.setValue(event.getValue());//notify UI completed
                 } else {
                     Log.d("EventRepository", "Can't modify event!!!");
-                    event.setValue(null);//notify UI not completed
+                    //event.setValue(null);//notify UI not completed
+                    modifyEventState.setValue(false);
                 }
             }
         });
+        return modifyEventState;
     }
 
 
-    public void setEvent(MutableLiveData<Event> event, MutableLiveData<User> user) {
-//        Event event = new Event(eventNameString, eventDescriptionString, locationString, startEventDateString, eventGenre, eventCovidRestrictionString);
+    public MutableLiveData<Boolean> setEvent(MutableLiveData<Event> event, MutableLiveData<User> user) {
+        MutableLiveData<Boolean> setEventState = new MutableLiveData<>();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Events");
         String eventId = dbRef.push().getKey();
         event.getValue().setId(eventId);
-        Log.d("EventRepository", "Before: " + eventId);
+        Log.d(TAG, "Set event with id " + eventId);
         dbRef.child(eventId).setValue(event.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Log.d("EventRepository", "Crated event " + eventId);
+                    Log.d(TAG, "Crated event with id " + eventId);
                     FirebaseDatabase.
                             getInstance()
                             .getReference("Users")
@@ -106,20 +110,21 @@ public class EventRepository {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                Log.d("EventRepository", "User " + user.getValue().id + " is owner of " +eventId);
-                                event.setValue(event.getValue());//notify UI completed
+                                Log.d(TAG, "User " + user.getValue().id + " is owner of " + eventId);
+                                setEventState.setValue(true);
                             }   else{
-                                Log.e("EventRepository", "User is not owner!!!");
-                                event.setValue(null);//notify UI not completed
+                                Log.e(TAG, "User "+ user.getValue().id +" is not owner of " + eventId);
+                                setEventState.setValue(false);
                             }
                         }
                     });
                 } else {
-                    Log.e("EventRepository", "Can't create event!!!");
-                    event.setValue(null);//notify UI not completed
+                    Log.e(TAG, "Can't create event!!!");
+                    setEventState.setValue(false);
                 }
             }
         });
+        return setEventState;
     }
 
 
