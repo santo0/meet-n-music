@@ -67,6 +67,7 @@ public class StartPageFragment extends Fragment {
         } );
         loginUser = (Button) view.findViewById(R.id.loginUser);
         loginUser.setOnClickListener(v -> {
+            loginUser.setEnabled(false);
             loginUserFunction();
         } );
         return view;
@@ -118,6 +119,7 @@ public class StartPageFragment extends Fragment {
                     Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);
                 }
+                loginUser.setEnabled(true);
             }
         });
     }
