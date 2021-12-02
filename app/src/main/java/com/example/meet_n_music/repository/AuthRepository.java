@@ -1,6 +1,9 @@
 package com.example.meet_n_music.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.meet_n_music.model.User;
@@ -14,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthRepository {
+    private static final String TAG = "AuthRepository";
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private MutableLiveData<User> currentUser = new MutableLiveData<>();
     static private AuthRepository authRepository;
@@ -178,4 +183,76 @@ public class AuthRepository {
         return completed;
     }
 
+    public MutableLiveData<Boolean> deleteEventOwnership(String eventId, String ownerId) {
+        MutableLiveData<Boolean> delOwnership = new MutableLiveData<>();
+        Log.d(TAG, "Deleting event ownership of event " + eventId + " from user " + ownerId);
+        FirebaseDatabase.getInstance().getReference("Users").child(ownerId).child("ownedEventsIds").child(eventId).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if(error != null){
+                    Log.d(TAG, error.getMessage());
+                    Log.d(TAG, error.getDetails());
+                }
+                Log.d(TAG, "delOwnership to true");
+                delOwnership.setValue(true);
+            }
+        });
+        return delOwnership;
+    }
+
+    public MutableLiveData<Boolean> deleteEventAttendees(String eventId) {
+        MutableLiveData<Boolean> delAttendees = new MutableLiveData<>();
+        Log.d(TAG, "Deleting event attendees");
+        FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "onDataChange");
+                for(DataSnapshot ds: snapshot.getChildren()){
+                    Log.d(TAG, "we have an user");
+                    User user = ds.getValue(User.class);
+                    if(user != null){
+                        user.setId(ds.getKey());
+                        Log.d(TAG, user.username + " --- " + user.getId());
+                        for(DataSnapshot dds : ds.child("attendingEventsIds").getChildren()){
+                            String id = dds.getKey();
+                            if(id != null){
+                                Log.d(TAG, id + "==?" + eventId);
+                                if(id.equals(eventId)){
+                                    Log.d(TAG, id + " is going to be deleted");
+                                    FirebaseDatabase
+                                            .getInstance()
+                                            .getReference("Users")
+                                            .child(user.id)
+                                            .child("attendingEventsIds")
+                                            .child(eventId)
+                                            .removeValue(new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                            Log.d(TAG, "Deleted " + eventId + " from " + user.username);
+                                        }
+                                    });
+                                    break;
+                                }
+                            }else{
+                                Log.d(TAG, "Key is null!");
+                            }
+                        }
+                    }else {
+                        Log.d(TAG, "User is null");
+                    }
+                }
+                Log.d(TAG, "delAttendees to true");
+                delAttendees.setValue(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled");
+                Log.d(TAG, error.getMessage());
+                Log.d(TAG, error.getDetails());
+            }
+        });
+
+        return delAttendees;
+    }
 }
