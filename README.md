@@ -11,6 +11,9 @@ Our motivation for this project was to create an app where users can still be co
 ## Figma prototype
 [You can see app prototype here](https://www.figma.com/proto/aGaNYe0UEvxEouh3t2du4n/AndroidPrototype?node-id=19%3A77&scaling=scale-down&page-id=0%3A1&starting-point-node-id=12%3A2)
 
+## Video demonstration
+[You can see the video demonstration here](https://www.youtube.com/watch?v=1iB0S4_wRZI)
+
 ## MoSCoW requirements
 Our application will have some features with different crucial roles, so in order to have them structured we made a MoSCoW requirements.
 - Meet n' Music is based on CRUD operations, so it **must have** :
