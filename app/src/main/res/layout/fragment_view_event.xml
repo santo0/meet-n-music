@@ -13,30 +13,34 @@
 
         <TextView
             android:id="@+id/namePlaceholder"
-            android:layout_width="185dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="32dp"
-            android:text="Event Name"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="30dp"
+            android:background="@color/white"
             android:inputType="textMultiLine"
+            android:text="Event Name"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:background="@color/white"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/layoutTocho" />
 
         <TextView
             android:id="@+id/descriptionPlaceholder"
-            android:layout_width="319dp"
-            android:layout_height="121dp"
-            android:layout_marginTop="52dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/white"
             android:ellipsize="end"
             android:maxLines="5"
             android:scrollbars="vertical"
             android:singleLine="false"
+            android:padding="10dp"
             android:text="Event description"
-            android:textSize="24sp"
-            android:background="@color/white"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,15 +48,14 @@
 
         <RelativeLayout
             android:id="@+id/layoutTocho"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical"
-            app:layout_constraintStart_toEndOf="@+id/namePlaceholder"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/tvTotalAttendees">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imagePlaceholder">
 
             <Button
                 android:id="@+id/btnAttend"
@@ -60,23 +63,26 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/secondary_variant"
                 android:text="Join event"
+                android:visibility="visible"
                 android:layout_alignParentLeft="true"
-                android:visibility="gone" />
+                tools:layout_editor_absoluteX="271dp"
+                tools:layout_editor_absoluteY="382dp" />
 
             <RelativeLayout
                 android:id="@+id/editLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_alignParentLeft="true">
+                android:layout_alignParentLeft="true"
+                android:visibility="gone">
+
                 <TextView
                     android:id="@+id/editTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
                     android:layout_alignTop="@id/editEventButton"
                     android:layout_alignParentTop="true"
-                    android:text="Edit event" />
+                    android:text="Edit event"
+                    android:textColor="@color/white" />
 
                 <ImageView
                     android:id="@+id/editEventButton"
@@ -86,76 +92,154 @@
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/ic_baseline_edit_24" />
 
+                <Button
+                    android:id="@+id/deleteEventButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:backgroundTint="@color/red"
+                    android:text="Delete event" />
+
             </RelativeLayout>
         </RelativeLayout>
-        <TextView
-            android:id="@+id/tvTotalAttendees"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text=""
-            app:layout_constraintTop_toBottomOf="@id/layoutTocho"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/descriptionPlaceholder"/>
 
-        <TextView
-            android:id="@+id/datePlaceHolder"
-            android:layout_width="wrap_content"
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:text="Starting date"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
             android:background="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.159"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/descriptionPlaceholder" />
+            android:padding="5dp"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionPlaceholder"
+            tools:layout_editor_absoluteX="0dp">
 
-        <TextView
-            android:id="@+id/locationPlaceholder"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/attendeesIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_baseline_group_24" />
+
+            <TextView
+                android:id="@+id/tvTotalAttendees"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/attendeesIcon"
+                android:text="Attendees placeholder"
+                android:padding="10dp"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/divider1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="@color/cardview_dark_background"
+            app:layout_constraintTop_toBottomOf="@id/relativeLayout2"
+            />
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Location"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.01"
-            app:layout_constraintStart_toStartOf="@+id/datePlaceHolder"
-            app:layout_constraintTop_toBottomOf="@+id/map" />
+            android:padding="5dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/divider1"
+            tools:layout_editor_absoluteX="16dp">
+
+            <ImageView
+                android:id="@+id/calendarIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_baseline_calendar_today_24" />
+
+            <TextView
+                android:id="@+id/datePlaceHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/calendarIcon"
+                android:background="@color/white"
+                android:padding="10dp"
+                android:text="Starting date"
+                android:textSize="14sp" />
+        </RelativeLayout>
+        <View
+            android:id="@+id/divider2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="1dp"
+            android:layout_width="match_parent"
+            android:background="@color/cardview_dark_background"
+            app:layout_constraintTop_toBottomOf="@id/relativeLayout" />
+        <RelativeLayout
+            android:id="@+id/locationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:background="@color/white"
+            android:padding="5dp"
+            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            tools:layout_editor_absoluteX="0dp">
+
+            <ImageView
+                android:id="@+id/locationIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_baseline_map_24" />
+
+            <TextView
+                android:id="@+id/locationPlaceholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/locationIcon"
+                android:text="Location"
+                android:padding="10dp"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
 
         <ListView
             android:id="@+id/covidPlaceholder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="10dp"
             android:background="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/datePlaceHolder" />
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locationLayout" />
 
         <ImageView
             android:id="@+id/imagePlaceholder"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_margin="40dp"
-            android:layout_marginTop="52dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
+            android:layout_width="match_parent"
+            android:layout_height="252dp"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/datePlaceHolder" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_margin="20dp"
+            android:layout_margin="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/covidPlaceholder"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imagePlaceholder"
-            app:layout_constraintVertical_bias="0.319"
+            android:layout_marginBottom="20dp"
             tools:context=".ViewEventFragment"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="40dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.meet_n_music.ui;
 
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -7,10 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,7 +27,6 @@ import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.meet_n_music.R;
-import com.example.meet_n_music.api.WeatherManager;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.EventGeographicalLocation;
 import com.example.meet_n_music.model.User;
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -80,7 +84,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
     MutableLiveData<Event> eventLiveData;
     LiveData<String> eventIdLiveData;
     private TextView eventName, eventDescription, eventDate, eventLocation;
-    private String eventCovid;
     private Button eventEdit;
     private ListView covidRestrictions;
     private GoogleMap mMap;
@@ -104,6 +107,31 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
         userAttendsEvent = new MutableLiveData<>();
         eventLiveData = new MutableLiveData<>();
 
+
+
+
+        eventName = (TextView) view.findViewById(R.id.namePlaceholder);
+        eventDescription = (TextView) view.findViewById(R.id.descriptionPlaceholder);
+        eventDate = (TextView) view.findViewById(R.id.datePlaceHolder);
+        eventLocation = (TextView) view.findViewById(R.id.locationPlaceholder);
+        covidRestrictions = (ListView) view.findViewById(R.id.covidPlaceholder);
+
+        covidRestrictions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        covidRestrictions.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice,getResources().getStringArray(R.array.CovidRestrictions)));
+
+        eventDescription.setMovementMethod(new ScrollingMovementMethod());
+
+
+        loadAttendees(view);
+
+        loadEvent(view);
+
+        return view;
+    }
+
+
+
+    private void loadAttendees(View view) {
         userAttendsEvent.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean attends) {
@@ -201,27 +229,17 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
+    }
 
-
-        eventName = (TextView) view.findViewById(R.id.namePlaceholder);
-        eventDescription = (TextView) view.findViewById(R.id.descriptionPlaceholder);
-        eventDate = (TextView) view.findViewById(R.id.datePlaceHolder);
-        eventLocation = (TextView) view.findViewById(R.id.locationPlaceholder);
-        covidRestrictions = (ListView) view.findViewById(R.id.covidPlaceholder);
-
-        eventDescription.setMovementMethod(new ScrollingMovementMethod());
-
-
+    private void loadEvent(View view) {
         Query query = FirebaseDatabase.getInstance().getReference().child("Events").child(eventIdLiveData.getValue());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Event event = snapshot.getValue(Event.class);
 
-                Log.d("debugFS", event.getName());
-                Log.d("debugFS", event.getDescription());
-                Log.d("debugFS", event.getStartDate());
-                Log.d("debugFS", event.getLocation());
+
+                Log.d(TAG, event.toString());
 
                 showUserButton(view, userMutableLiveData.getValue(), event);
 
@@ -238,10 +256,22 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                             //     StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/" + eventIdLD.getValue() + "/" + eventIdLD.getValue() + ".jpg");
                             Glide.with(getContext())
                                     .load(uri)
+                                    .centerCrop()
                                     .into((ImageView) view.findViewById(R.id.imagePlaceholder));
                         }
                     }
                 });
+
+                for (int i = 0; i < covidRestrictions.getCount(); i++) {
+                    for (String measure: getCovidRestrictions(event.getCovid())) {
+                        Log.d(TAG, measure + " ==?" + covidRestrictions.getItemAtPosition(i));
+                        if (measure.equals(covidRestrictions.getItemAtPosition(i))) {
+                            covidRestrictions.setItemChecked(i, true);
+                        }
+                    }
+                }
+
+                covidRestrictions.setEnabled(false);
 
                 eventLiveData.setValue(event);
 
@@ -276,7 +306,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 EventGeographicalLocation geoloc = snapshot.getValue(EventGeographicalLocation.class);
 
-                WeatherManager.getWeatherByCoords(geoloc.getLat(), geoloc.getLng());
                 LatLng location = new LatLng(geoloc.getLat(), geoloc.getLng());
                 moveCamera(location, DEFAULT_ZOOM);
                 mMap.addMarker(new MarkerOptions()
@@ -290,10 +319,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-
-
-//        ArrayList<String> covidArray = getCovidRestrictions(eventCovid);
-        return view;
     }
 
 
@@ -303,6 +328,52 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
             //User is owner
             btnAttend.setVisibility(View.GONE);
             view.findViewById(R.id.editLayout).setVisibility(View.VISIBLE);
+            view.findViewById(R.id.deleteEventButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new MaterialAlertDialogBuilder(getContext(), R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog)
+                            .setMessage("Do you want to delete the event?")
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Toast.makeText(getContext(), "NOPE!", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(getContext(), "Deleting the event!", Toast.LENGTH_SHORT).show();
+                            viewEventViewModel.deleteEvent(event.getId()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                @Override
+                                public void onChanged(Boolean delEvent) {
+                                    viewEventViewModel.deleteEventAttendees(event.getId()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                        @Override
+                                        public void onChanged(Boolean delAttendees) {
+                                            viewEventViewModel.deleteEventOwnership(event.getId(), user.id).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                                @Override
+                                                public void onChanged(Boolean delOwnership) {
+                                                    viewEventViewModel.deleteEventGeoLocation(event.getId()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                                        @Override
+                                                        public void onChanged(Boolean delGeoLocation) {
+                                                            viewEventViewModel.deleteEventImage(event.getImagePath()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                                                                @Override
+                                                                public void onChanged(Boolean delImage) {
+                                                                    Toast.makeText(getContext(), "Event deleted!", Toast.LENGTH_SHORT).show();
+                                                                    Navigation.findNavController(view).navigate(R.id.action_viewEventFragment_to_feedFragment);
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }).show();
+                }
+            });
             view.findViewById(R.id.editEventButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -310,7 +381,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                     ViewEventFragmentDirections.ActionViewEventFragmentToEditEventFragment action = ViewEventFragmentDirections.actionViewEventFragmentToEditEventFragment();
                     action.setEventId(event.getId());
                     Navigation.findNavController(view).navigate(action);
-//                    Navigation.findNavController(getView()).navigate(R.id.action_viewEventFragment_to_editEventFragment);
                 }
             });
         } else {
@@ -322,12 +392,13 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
 
 
     public ArrayList<String> getCovidRestrictions(String eventCovid) {
-        return new ArrayList<String>(Arrays.asList(eventCovid.split(", ")));
+        return new ArrayList<>(Arrays.asList(eventCovid.split(", ")));
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
     private void moveCamera(LatLng latLng, float zoom) {

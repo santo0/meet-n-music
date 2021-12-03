@@ -4,6 +4,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.meet_n_music.model.Event;
@@ -13,6 +14,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,19 +33,23 @@ public class GeoLocationRepository {
     }
 
 
-    public void setGeoLocation(String geoId, MutableLiveData<EventGeographicalLocation> eventGeographicalLocationMutableLiveData) {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("EventGeographicalLocation");
-        dbRef.child(geoId).setValue(eventGeographicalLocationMutableLiveData.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public MutableLiveData<Boolean> setGeoLocation(String geoId, MutableLiveData<EventGeographicalLocation> eventGeographicalLocationMutableLiveData) {
+        MutableLiveData<Boolean> setGeoLocationState = new MutableLiveData<>();
+        FirebaseDatabase.getInstance().getReference("EventGeographicalLocation").child(geoId).setValue(eventGeographicalLocationMutableLiveData.getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    eventGeographicalLocationMutableLiveData.setValue(eventGeographicalLocationMutableLiveData.getValue());//notify UI completed
+                    Log.d(TAG, "success on setting location " + geoId);
+                    setGeoLocationState.setValue(true);
+//                    eventGeographicalLocationMutableLiveData.setValue(eventGeographicalLocationMutableLiveData.getValue());//notify UI completed
                 } else {
-                    Log.d(TAG, "NULL!!!");
-                    eventGeographicalLocationMutableLiveData.setValue(null);//notify UI not completed
+                    Log.d(TAG, "failed on setting location " + geoId);
+                    setGeoLocationState.setValue(false);
+  //                  eventGeographicalLocationMutableLiveData.setValue(null);//notify UI not completed
                 }
             }
         });
+        return setGeoLocationState;
     }
 
     public MutableLiveData<ArrayList<Pair<String, EventGeographicalLocation>>> getAllEventGeoLocations(){
@@ -72,4 +78,20 @@ public class GeoLocationRepository {
         return geoLocMutableLiveData;
     }
 
+    public MutableLiveData<Boolean> deleteGeoLocation(String eventId) {
+        MutableLiveData<Boolean> delGeoLoc = new MutableLiveData<>();
+        Log.d(TAG, "Deleting GeoLocation of event " + eventId);
+        FirebaseDatabase.getInstance().getReference("EventGeographicalLocation").child(eventId).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if(error != null){
+                    Log.d(TAG, error.getMessage());
+                    Log.d(TAG, error.getDetails());
+                }
+                Log.d(TAG, "delGeoLoc to true");
+                delGeoLoc.setValue(true);
+            }
+        });
+        return delGeoLoc;
+    }
 }

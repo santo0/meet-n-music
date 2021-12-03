@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SearchFragment">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/primary">
+    tools:context=".ui.SearchFragment"
+    android:background="@color/primary"
+    android:orientation="vertical">
+
         <Spinner
             android:id="@+id/genreSearch"
-            android:layout_width="315dp"
+            android:layout_width="match_parent"
+            android:layout_margin="16dp"
             android:layout_height="53dp"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="25dp"
             android:background="@color/white"/>
         <Button
             android:id="@+id/searchButtonGenre"
-            android:layout_width="315dp"
+            android:layout_width="match_parent"
+            android:layout_margin="16dp"
             android:layout_height="wrap_content"
             android:text="SEARCH"
             android:textSize="20dp"
@@ -30,8 +30,7 @@
             android:id="@+id/recyclerViewGenre"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="20dp"
+            android:layout_margin="16dp"
             android:background="@color/primary"/>
-    </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
