@@ -1,17 +1,17 @@
 package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.navigation.Navigation;
 
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.User;
@@ -59,19 +59,20 @@ public class ChangePasswordFragment extends Fragment {
 
         Button submitButton = view.findViewById(R.id.submitPassword);
         submitButton.setOnClickListener(l -> {
-            if (newPassword.toString().equals(confirmPassword.toString())) {
-                authRepository.updatePassword(currentPassword.toString(), newPassword.toString()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            if (newPassword.getText().toString().equals(confirmPassword.getText().toString())) {
+                authRepository.updatePassword(currentPassword.getText().toString(), newPassword.getText().toString()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
                         if (aBoolean != null) {
                             if (aBoolean) {
                                 Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                Navigation.findNavController(view).navigate(R.id.action_changePasswordFragment_to_userProfileFragment);
                             }
                             if (!aBoolean) {
                                 Toast.makeText(getContext(), "Something was wrong while updating the password", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            throw new NullPointerException();
+                            Toast.makeText(getContext(), "Something was wrong while updating the password", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,19 +60,20 @@ public class ChangeEmailFragment extends Fragment {
 
         Button submitButton = view.findViewById(R.id.submitEmail);
         submitButton.setOnClickListener(l -> {
-            if (newEmail.toString().equals(confirmEmail.toString())) {
-                authRepository.updateEmail(currentPassword.toString(), newEmail.toString()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            if (newEmail.getText().toString().equals(confirmEmail.getText().toString())) {
+                authRepository.updateEmail(currentPassword.getText().toString(), newEmail.getText().toString()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(Boolean aBoolean) {
                         if (aBoolean != null) {
                             if  (aBoolean) {
                                 Toast.makeText(getContext(), "Email updated successfully", Toast.LENGTH_SHORT).show();
+                                Navigation.findNavController(view).navigate(R.id.action_changeEmailFragment_to_userProfileFragment);
                             }
                             if (!aBoolean) {
                                 Toast.makeText(getContext(), "Something was wrong while updating the email", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            throw new NullPointerException();
+                            Toast.makeText(getContext(), "Something was wrong while updating the email", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
