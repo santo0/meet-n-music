@@ -18,12 +18,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.example.meet_n_music.EventItemAction;
-import com.example.meet_n_music.EventListAdapter;
+import com.example.meet_n_music.utils.EventItemAction;
+import com.example.meet_n_music.utils.EventListAdapter;
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
-import com.example.meet_n_music.model.User;
-import com.example.meet_n_music.viewmodel.AuthViewModel;
 import com.example.meet_n_music.viewmodel.FeedViewModel;
 
 import java.util.ArrayList;
@@ -71,6 +69,9 @@ public class SearchFragment extends Fragment {
         recyclerViewGenre.setHasFixedSize(true);
         recyclerViewGenre.setLayoutManager(new LinearLayoutManager(getContext()));
         searchButtonGenre = (Button) view.findViewById(R.id.searchButtonGenre);
+        listEventGenre();
+
+
         searchButtonGenre.setOnClickListener(l -> {
             searchButtonGenre.setEnabled(false);
             listEventGenre();
@@ -106,6 +107,7 @@ public class SearchFragment extends Fragment {
                 adapterEventGenreList.setEvents(eventsGenre);
                 recyclerViewGenre.setAdapter(adapterEventGenreList);
                 adapterEventGenreList.notifyDataSetChanged();
+
                 searchButtonGenre.setEnabled(true);
             }
         });

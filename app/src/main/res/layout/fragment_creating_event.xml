@@ -33,7 +33,7 @@
             android:background="@drawable/white_border"
             android:hint="Event Name"
             android:inputType="text"
-            android:padding="5dp"
+            android:padding="10dp"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/createEvent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:padding="5dp"
+            android:padding="10dp"
             android:background="@drawable/white_border"
             android:hint="Event Description"
             android:inputType="textMultiLine"
@@ -125,8 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text=""
-                android:textColor="@color/white" />
+                android:text=""/>
         </LinearLayout>
 
 

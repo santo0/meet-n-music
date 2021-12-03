@@ -1,4 +1,4 @@
-package com.example.meet_n_music;
+package com.example.meet_n_music.utils;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,13 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
-import com.example.meet_n_music.ui.FeedFragmentDirections;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

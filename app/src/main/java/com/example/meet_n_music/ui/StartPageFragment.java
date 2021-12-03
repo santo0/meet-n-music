@@ -1,5 +1,6 @@
 package com.example.meet_n_music.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -66,11 +68,15 @@ public class StartPageFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         createAccountListener = (TextView) view.findViewById(R.id.createAccount);
         createAccountListener.setOnClickListener(v ->{
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             Navigation.findNavController(v).navigate(R.id.action_startPageFragment_to_registerFragment);
         } );
         loginUser = (Button) view.findViewById(R.id.loginUser);
         loginUser.setOnClickListener(v -> {
             loginUser.setEnabled(false);
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             loginUserFunction();
         } );
         return view;

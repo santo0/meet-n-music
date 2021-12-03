@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -37,10 +38,6 @@ public class UserProfileFragment extends Fragment {
 
     Button changePassword;
 
-    ImageView lSpanish;
-    ImageView lEnglish;
-    ImageView lDanish;
-
     public UserProfileFragment() {
         // Required empty public constructor
     }
@@ -58,6 +55,9 @@ public class UserProfileFragment extends Fragment {
         ((MainActivity)getActivity()).unlockDrawerMenu();
     }
 
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,12 +69,16 @@ public class UserProfileFragment extends Fragment {
         changeEmail = view.findViewById(R.id.change_email);
 
         changePassword = view.findViewById(R.id.change_password);
+/*
+        OnBackPressedCallback callback  = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Navigation.findNavController(view).navigate(R.id.action_userProfileFragment_to_feedFragment);
 
-        lSpanish = (ImageView) view.findViewById(R.id.spanish);
-        lEnglish = (ImageView) view.findViewById(R.id.english);
-        lDanish = (ImageView) view.findViewById(R.id.danish);
-
-
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), callback);
+*/
         AuthRepository authRepository = AuthRepository.getAuthRepository();
         MutableLiveData<User> userMutableLiveData = authRepository.getCurrentUser();
         User user = userMutableLiveData.getValue();
@@ -99,37 +103,6 @@ public class UserProfileFragment extends Fragment {
         //Change user password
         changePassword.setOnClickListener(l -> {
             Navigation.findNavController(getView()).navigate(R.id.action_userProfileFragment_to_changePasswordFragment);
-        });
-
-        //Change language to Spanish
-        lSpanish.setOnClickListener(l -> {
-            Log.d("languages", "Spanish");
-            Locale localization = new Locale("es", "ES");
-            Locale.setDefault(localization);
-            Configuration config = new Configuration();
-            config.locale = localization;
-            getActivity().getBaseContext().getResources().updateConfiguration(config,
-                    getActivity().getBaseContext().getResources().getDisplayMetrics());
-        });
-
-        //Change language to English
-        lEnglish.setOnClickListener(l -> {
-            Locale localization = new Locale("en", "US");
-            Locale.setDefault(localization);
-            Configuration config = new Configuration();
-            config.locale = localization;
-            getActivity().getBaseContext().getResources().updateConfiguration(config,
-                    getActivity().getBaseContext().getResources().getDisplayMetrics());
-        });
-
-        //Change language to Danish
-        lDanish.setOnClickListener(l -> {
-            Locale localization = new Locale("da", "DK");
-            Locale.setDefault(localization);
-            Configuration config = new Configuration();
-            config.locale = localization;
-            getActivity().getBaseContext().getResources().updateConfiguration(config,
-                    getActivity().getBaseContext().getResources().getDisplayMetrics());
         });
 
         logoutBtn = view.findViewById(R.id.logout);

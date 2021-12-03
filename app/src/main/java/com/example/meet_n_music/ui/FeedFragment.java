@@ -5,11 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -19,8 +15,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.meet_n_music.EventItemAction;
-import com.example.meet_n_music.EventListAdapter;
+import com.example.meet_n_music.utils.EventItemAction;
+import com.example.meet_n_music.utils.EventListAdapter;
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.User;

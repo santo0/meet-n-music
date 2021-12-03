@@ -27,7 +27,6 @@ import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.meet_n_music.R;
-import com.example.meet_n_music.api.WeatherManager;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.EventGeographicalLocation;
 import com.example.meet_n_music.model.User;
@@ -108,6 +107,31 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
         userAttendsEvent = new MutableLiveData<>();
         eventLiveData = new MutableLiveData<>();
 
+
+
+
+        eventName = (TextView) view.findViewById(R.id.namePlaceholder);
+        eventDescription = (TextView) view.findViewById(R.id.descriptionPlaceholder);
+        eventDate = (TextView) view.findViewById(R.id.datePlaceHolder);
+        eventLocation = (TextView) view.findViewById(R.id.locationPlaceholder);
+        covidRestrictions = (ListView) view.findViewById(R.id.covidPlaceholder);
+
+        covidRestrictions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        covidRestrictions.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice,getResources().getStringArray(R.array.CovidRestrictions)));
+
+        eventDescription.setMovementMethod(new ScrollingMovementMethod());
+
+
+        loadAttendees(view);
+
+        loadEvent(view);
+
+        return view;
+    }
+
+
+
+    private void loadAttendees(View view) {
         userAttendsEvent.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean attends) {
@@ -205,20 +229,9 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
+    }
 
-
-        eventName = (TextView) view.findViewById(R.id.namePlaceholder);
-        eventDescription = (TextView) view.findViewById(R.id.descriptionPlaceholder);
-        eventDate = (TextView) view.findViewById(R.id.datePlaceHolder);
-        eventLocation = (TextView) view.findViewById(R.id.locationPlaceholder);
-        covidRestrictions = (ListView) view.findViewById(R.id.covidPlaceholder);
-
-        covidRestrictions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        covidRestrictions.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice,getResources().getStringArray(R.array.CovidRestrictions)));
-
-        eventDescription.setMovementMethod(new ScrollingMovementMethod());
-
-
+    private void loadEvent(View view) {
         Query query = FirebaseDatabase.getInstance().getReference().child("Events").child(eventIdLiveData.getValue());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -293,7 +306,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 EventGeographicalLocation geoloc = snapshot.getValue(EventGeographicalLocation.class);
 
-                WeatherManager.getWeatherByCoords(geoloc.getLat(), geoloc.getLng());
                 LatLng location = new LatLng(geoloc.getLat(), geoloc.getLng());
                 moveCamera(location, DEFAULT_ZOOM);
                 mMap.addMarker(new MarkerOptions()
@@ -307,10 +319,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
 
             }
         });
-
-
-
-        return view;
     }
 
 
@@ -351,7 +359,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                                                                 @Override
                                                                 public void onChanged(Boolean delImage) {
                                                                     Toast.makeText(getContext(), "Event deleted!", Toast.LENGTH_SHORT).show();
-                                                                    getFragmentManager().popBackStackImmediate();
+                                                                    Navigation.findNavController(view).navigate(R.id.action_viewEventFragment_to_feedFragment);
                                                                 }
                                                             });
                                                         }
