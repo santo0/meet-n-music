@@ -188,7 +188,7 @@
             android:layout_marginHorizontal="16dp"
             android:background="@color/white"
             android:padding="5dp"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            app:layout_constraintTop_toBottomOf="@+id/divider2"
             tools:layout_editor_absoluteX="0dp">
 
             <ImageView
@@ -236,6 +236,8 @@
             android:layout_height="400dp"
             android:layout_margin="16dp"
             app:layout_constraintTop_toBottomOf="@+id/covidPlaceholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp"
             tools:context=".ViewEventFragment"
             tools:layout_editor_absoluteX="40dp" />
 
