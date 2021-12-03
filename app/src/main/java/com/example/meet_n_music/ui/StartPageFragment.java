@@ -1,5 +1,6 @@
 package com.example.meet_n_music.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,10 +10,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -26,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 public class StartPageFragment extends Fragment {
+    private static final String TAG = "StartPageFragment";
+
     public StartPageFragment() {
         // Required empty public constructor
     }
@@ -63,11 +68,15 @@ public class StartPageFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         createAccountListener = (TextView) view.findViewById(R.id.createAccount);
         createAccountListener.setOnClickListener(v ->{
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             Navigation.findNavController(v).navigate(R.id.action_startPageFragment_to_registerFragment);
         } );
         loginUser = (Button) view.findViewById(R.id.loginUser);
         loginUser.setOnClickListener(v -> {
             loginUser.setEnabled(false);
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             loginUserFunction();
         } );
         return view;
@@ -104,17 +113,21 @@ public class StartPageFragment extends Fragment {
         progressBar1.setVisibility(View.VISIBLE);
 
 
-        authViewModel.signIn(emailString,passwordString);
-
-        authViewModel.getCurrentUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+        authViewModel.signIn(emailString,passwordString).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(User user) {
-                if(user != null) {
-                    Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
-                    progressBar1.setVisibility(View.GONE);
-                    ((TextView)getActivity().findViewById(R.id.header_username)).setText("Logged as : " + user.username);
-                    Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
-
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean) {
+                    User user = authViewModel.getCurrentUser().getValue();
+                    if(user != null){
+                        Log.d(TAG, user.username);
+                        Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
+                        progressBar1.setVisibility(View.GONE);
+                        ((TextView)getActivity().findViewById(R.id.header_username)).setText("Logged as : " + user.username);
+                        Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
+                    }else{
+                        Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
+                        progressBar1.setVisibility(View.GONE);
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);

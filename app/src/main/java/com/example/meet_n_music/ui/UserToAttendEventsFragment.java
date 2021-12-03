@@ -2,13 +2,9 @@ package com.example.meet_n_music.ui;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,22 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.meet_n_music.EventItemAction;
-import com.example.meet_n_music.EventListAdapter;
+import com.example.meet_n_music.utils.EventItemAction;
+import com.example.meet_n_music.utils.EventListAdapter;
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.User;
 import com.example.meet_n_music.repository.EventRepository;
-import com.example.meet_n_music.viewmodel.AttendEventsViewModel;
 import com.example.meet_n_music.viewmodel.AuthViewModel;
-import com.example.meet_n_music.viewmodel.FeedViewModel;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class UserToAttendEventsFragment extends Fragment {

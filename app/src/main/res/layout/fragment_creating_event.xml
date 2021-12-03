@@ -30,10 +30,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:layout_constraintHorizontal_bias="0"
-            android:background="@color/white"
+            android:background="@drawable/white_border"
             android:hint="Event Name"
             android:inputType="text"
-            android:padding="5dp"
+            android:padding="10dp"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/createEvent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,8 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:padding="5dp"
-            android:background="@color/white"
+            android:padding="10dp"
+            android:background="@drawable/white_border"
             android:hint="Event Description"
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
@@ -62,7 +62,7 @@
         <RelativeLayout
             android:id="@+id/relLayout1"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
 
             android:layout_margin="16dp"
             android:background="@drawable/white_border"
@@ -83,7 +83,7 @@
                 android:id="@+id/locationInputSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignRight="@id/btnSearchLocation"
+                android:layout_toLeftOf="@id/btnSearchLocation"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/ic_magnify"
                 android:background="@null"
@@ -97,22 +97,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
                 android:backgroundTint="@color/secondary_variant"
                 android:text="Search" />
 
         </RelativeLayout>
 
 
-        <TextView
-            android:id="@+id/textLocation"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/white_border"
             android:layout_margin="16dp"
-            android:text=""
-            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relLayout1" />
+            app:layout_constraintTop_toBottomOf="@+id/relLayout1"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_map_24"
+                android:layout_margin="10dp"/>
+            <TextView
+                android:id="@+id/textLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text=""/>
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/eventStartDate"
@@ -123,14 +138,14 @@
             android:text="PICK EVENT DATE"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textLocation" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <Spinner
             android:id="@+id/genreSelection"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="16dp"
-            android:background="@color/white"
+            android:background="@drawable/white_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/eventStartDate" />
@@ -142,7 +157,7 @@
             android:layout_height="200dp"
             android:layout_margin="16dp"
             android:choiceMode="multipleChoice"
-            android:background="@color/white"
+            android:background="@drawable/white_border"
             app:layout_constraintBottom_toTopOf="@+id/uploadPhotoText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -168,7 +183,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_margin="20dp"
-            android:background="@drawable/white"
+            android:background="@drawable/white_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/uploadPhotoText"

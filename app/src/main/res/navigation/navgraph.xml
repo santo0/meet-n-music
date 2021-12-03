@@ -110,7 +110,9 @@
         tools:layout="@layout/fragment_view_event">
         <action
             android:id="@+id/action_viewEventFragment_to_feedFragment"
-            app:destination="@id/feedFragment" />
+            app:destination="@id/feedFragment"
+            app:popUpTo="@id/feedFragment"
+            app:popUpToInclusive="false" />
         <argument
             android:name="eventId"
             app:argType="string"

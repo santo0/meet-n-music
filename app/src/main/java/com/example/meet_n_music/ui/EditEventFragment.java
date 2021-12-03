@@ -84,14 +84,13 @@ public class EditEventFragment extends Fragment {
         eventDescription.setText(event.getDescription());
         startDate.setText(event.getStartDate());
 
-        tvLocation.setText(event.getLocation());
-
         GeoLocationManager.geoLocate(event.getLocation()).observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
             @Override
             public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
                 if(eventGeographicalLocation != null){
                     geographicalLocationLiveData.setValue(eventGeographicalLocation);
                     locationInput.setText(eventGeographicalLocation.getName());
+                    tvLocation.setText(eventGeographicalLocation.getName());
                 }
             }
         });
@@ -141,6 +140,8 @@ public class EditEventFragment extends Fragment {
         ((MainActivity) getActivity()).lockDrawerMenu();
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,17 +151,10 @@ public class EditEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        //View rootView = inflater.inflate(R.layout.fragment_edit_event, container, false);
         View rootView = inflater.inflate(R.layout.fragment_creating_event, container, false);
         ViewEventFragmentArgs args = ViewEventFragmentArgs.fromBundle(getArguments());
         eventIdLD = new MutableLiveData<>(args.getEventId());
         editEventViewModel = new ViewModelProvider(this).get(EditEventViewModel.class);
-
-        //finishEditSemaphore = new MutableLiveData<>(3);
-
-        //isPhotoChangedLD = new MutableLiveData<>(false);
-        //isEventChangedLD = new MutableLiveData<>(false);
-        //isLocationChangedLD = new MutableLiveData<>(false);
 
         tvLocation = rootView.findViewById(R.id.textLocation);
         createEventViewModel = new ViewModelProvider(this).get(CreateEventViewModel.class);

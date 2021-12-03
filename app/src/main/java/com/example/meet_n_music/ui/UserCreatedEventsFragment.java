@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.meet_n_music.EventItemAction;
-import com.example.meet_n_music.EventListAdapter;
+import com.example.meet_n_music.utils.EventItemAction;
+import com.example.meet_n_music.utils.EventListAdapter;
 import com.example.meet_n_music.R;
 import com.example.meet_n_music.model.Event;
 import com.example.meet_n_music.model.User;
