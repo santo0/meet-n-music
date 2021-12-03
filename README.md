@@ -40,3 +40,12 @@ Our application will have some features with different crucial roles, so in orde
 - We thought about this ideas, but we **won't have time** to implement them :
     - A place where you can see the history and activity of your friends. ❌
     - Changing the Q&A section for a real time chat. ❌
+
+
+## APIs
+For using Google Maps SDK, you need to create ```local.properties``` file and add:
+```
+MAPS_API_KEY={key here}
+```
+
+For connecting with Firebase Services, follow Android Studio instructions and the project will be set.
