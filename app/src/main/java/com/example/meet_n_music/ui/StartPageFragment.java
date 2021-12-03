@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 
 public class StartPageFragment extends Fragment {
+    private static final String TAG = "StartPageFragment";
+
     public StartPageFragment() {
         // Required empty public constructor
     }
@@ -104,17 +107,21 @@ public class StartPageFragment extends Fragment {
         progressBar1.setVisibility(View.VISIBLE);
 
 
-        authViewModel.signIn(emailString,passwordString);
-
-        authViewModel.getCurrentUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+        authViewModel.signIn(emailString,passwordString).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onChanged(User user) {
-                if(user != null) {
-                    Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
-                    progressBar1.setVisibility(View.GONE);
-                    ((TextView)getActivity().findViewById(R.id.header_username)).setText("Logged as : " + user.username);
-                    Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
-
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean) {
+                    User user = authViewModel.getCurrentUser().getValue();
+                    if(user != null){
+                        Log.d(TAG, user.username);
+                        Toast.makeText(getActivity(), "Login passed successfully!", Toast.LENGTH_SHORT).show();
+                        progressBar1.setVisibility(View.GONE);
+                        ((TextView)getActivity().findViewById(R.id.header_username)).setText("Logged as : " + user.username);
+                        Navigation.findNavController(getView()).navigate(R.id.action_startPageFragment_to_feedFragment);
+                    }else{
+                        Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
+                        progressBar1.setVisibility(View.GONE);
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Login failed! Check your credentials!", Toast.LENGTH_SHORT).show();
                     progressBar1.setVisibility(View.GONE);

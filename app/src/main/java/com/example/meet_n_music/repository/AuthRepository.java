@@ -47,30 +47,39 @@ public class AuthRepository {
         currentUser = new MutableLiveData<>();
     }
 
-    public void firebaseSignIn(String email, String password) {
+    public MutableLiveData<Boolean> firebaseSignIn(String email, String password) {
+        MutableLiveData<Boolean> signInEnd = new MutableLiveData<>();
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(authTask -> {
             if (authTask.isSuccessful()) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
                     String uid = firebaseUser.getUid();
 
-                    FirebaseDatabase.getInstance().getReference("Users").child(uid).addValueEventListener(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference("Users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             User user = snapshot.getValue(User.class);
                             user.id = uid;
                             currentUser.setValue(user);
+                            signInEnd.setValue(true);
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            currentUser.setValue(null);
+                            signInEnd.setValue(false);
                         }
                     });
-
+                }else{
+                    currentUser.setValue(null);
+                    signInEnd.setValue(false);
                 }
+            }else{
+                currentUser.setValue(null);
+                signInEnd.setValue(false);
             }
         });
+        return signInEnd;
     }
 
     public MutableLiveData<User> firebaseSignUp(String username, String interestedIn, String email, String password) {

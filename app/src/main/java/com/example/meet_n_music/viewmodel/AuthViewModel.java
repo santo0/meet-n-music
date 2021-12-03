@@ -17,8 +17,8 @@ public class AuthViewModel extends ViewModel {
         return authRepository.getCurrentUser();
     }
 
-    public void signIn(String email, String password) {
-        authRepository.firebaseSignIn(email, password);
+    public MutableLiveData<Boolean> signIn(String email, String password) {
+        return authRepository.firebaseSignIn(email, password);
     }
 
     public MutableLiveData<User> signUp(String username, String interestedIn, String email, String password) {
