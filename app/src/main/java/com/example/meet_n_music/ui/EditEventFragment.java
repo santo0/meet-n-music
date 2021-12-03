@@ -84,14 +84,13 @@ public class EditEventFragment extends Fragment {
         eventDescription.setText(event.getDescription());
         startDate.setText(event.getStartDate());
 
-        tvLocation.setText(event.getLocation());
-
         GeoLocationManager.geoLocate(event.getLocation()).observe(getViewLifecycleOwner(), new Observer<EventGeographicalLocation>() {
             @Override
             public void onChanged(EventGeographicalLocation eventGeographicalLocation) {
                 if(eventGeographicalLocation != null){
                     geographicalLocationLiveData.setValue(eventGeographicalLocation);
                     locationInput.setText(eventGeographicalLocation.getName());
+                    tvLocation.setText(eventGeographicalLocation.getName());
                 }
             }
         });
