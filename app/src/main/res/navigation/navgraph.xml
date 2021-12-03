@@ -64,11 +64,19 @@
     <fragment
         android:id="@+id/changePasswordFragment"
         android:name="com.example.meet_n_music.ui.ChangePasswordFragment"
-        android:label="ChangePasswordFragment" />
+        android:label="ChangePasswordFragment" >
+        <action
+            android:id="@+id/action_changePasswordFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/changeEmailFragment"
         android:name="com.example.meet_n_music.ui.ChangeEmailFragment"
-        android:label="ChangeEmailFragment" />
+        android:label="ChangeEmailFragment" >
+        <action
+            android:id="@+id/action_changeEmailFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.meet_n_music.ui.SearchFragment"
@@ -133,7 +141,7 @@
         android:id="@+id/editEventFragment"
         android:name="com.example.meet_n_music.ui.EditEventFragment"
         android:label="fragment_edit_event"
-        tools:layout="@layout/fragment_edit_event">
+        tools:layout="@layout/fragment_creating_event">
         <action
             android:id="@+id/action_editEventFragment_to_viewEventFragment"
             app:destination="@id/viewEventFragment" />

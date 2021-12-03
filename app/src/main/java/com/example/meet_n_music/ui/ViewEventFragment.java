@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -83,7 +85,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
     MutableLiveData<Event> eventLiveData;
     LiveData<String> eventIdLiveData;
     private TextView eventName, eventDescription, eventDate, eventLocation;
-    private String eventCovid;
     private Button eventEdit;
     private ListView covidRestrictions;
     private GoogleMap mMap;
@@ -212,6 +213,9 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
         eventLocation = (TextView) view.findViewById(R.id.locationPlaceholder);
         covidRestrictions = (ListView) view.findViewById(R.id.covidPlaceholder);
 
+        covidRestrictions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        covidRestrictions.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice,getResources().getStringArray(R.array.CovidRestrictions)));
+
         eventDescription.setMovementMethod(new ScrollingMovementMethod());
 
 
@@ -221,10 +225,8 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Event event = snapshot.getValue(Event.class);
 
-                Log.d("debugFS", event.getName());
-                Log.d("debugFS", event.getDescription());
-                Log.d("debugFS", event.getStartDate());
-                Log.d("debugFS", event.getLocation());
+
+                Log.d(TAG, event.toString());
 
                 showUserButton(view, userMutableLiveData.getValue(), event);
 
@@ -246,6 +248,17 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
+
+                for (int i = 0; i < covidRestrictions.getCount(); i++) {
+                    for (String measure: getCovidRestrictions(event.getCovid())) {
+                        Log.d(TAG, measure + " ==?" + covidRestrictions.getItemAtPosition(i));
+                        if (measure.equals(covidRestrictions.getItemAtPosition(i))) {
+                            covidRestrictions.setItemChecked(i, true);
+                        }
+                    }
+                }
+
+                covidRestrictions.setEnabled(false);
 
                 eventLiveData.setValue(event);
 
@@ -296,7 +309,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
         });
 
 
-//        ArrayList<String> covidArray = getCovidRestrictions(eventCovid);
+
         return view;
     }
 
@@ -360,7 +373,6 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
                     ViewEventFragmentDirections.ActionViewEventFragmentToEditEventFragment action = ViewEventFragmentDirections.actionViewEventFragmentToEditEventFragment();
                     action.setEventId(event.getId());
                     Navigation.findNavController(view).navigate(action);
-//                    Navigation.findNavController(getView()).navigate(R.id.action_viewEventFragment_to_editEventFragment);
                 }
             });
         } else {
@@ -372,7 +384,7 @@ public class ViewEventFragment extends Fragment implements OnMapReadyCallback {
 
 
     public ArrayList<String> getCovidRestrictions(String eventCovid) {
-        return new ArrayList<String>(Arrays.asList(eventCovid.split(", ")));
+        return new ArrayList<>(Arrays.asList(eventCovid.split(", ")));
     }
 
     @Override

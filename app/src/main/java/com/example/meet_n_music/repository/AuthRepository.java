@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.meet_n_music.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -140,12 +141,29 @@ public class AuthRepository {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        completed.setValue(true);
+                                        FirebaseDatabase
+                                                .getInstance()
+                                                .getReference("Users")
+                                                .child(user.getUid())
+                                                .child("email")
+                                                .setValue(newEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                completed.setValue(true);
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                completed.setValue(false);
+                                            }
+                                        });
                                     } else {
                                         completed.setValue(false);
                                     }
                                 }
                             });
+                        } else {
+                            completed.setValue(false);
                         }
                     }
                 });
@@ -177,6 +195,8 @@ public class AuthRepository {
                                     }
                                 }
                             });
+                        }else{
+                            completed.setValue(false);
                         }
                     }
                 });
